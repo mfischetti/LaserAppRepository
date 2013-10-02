@@ -21,7 +21,7 @@ public class MainActivity extends Activity implements OnClickListener {
         setContentView(R.layout.activity_main);
         setupWidget();
     }
-
+//Test commit
 
     private void setupWidget() {
     	Button host = (Button)findViewById(R.id.host);
