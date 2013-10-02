@@ -1,0 +1,54 @@
+package com.example.laser;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+public class MainActivity extends Activity implements OnClickListener {
+
+	TextView mtextOutput;
+	EditText mtextInput;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        setupWidget();
+    }
+
+
+    private void setupWidget() {
+    	Button save = (Button)findViewById(R.id.save);
+    	save.setOnClickListener(this);
+    	mtextOutput = (TextView)findViewById(R.id.textView);
+    	mtextInput = (EditText)findViewById(R.id.textinput);
+    	
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+
+	@Override
+	public void onClick(View v) {
+		if(v.getId() == R.id.save){
+			String text = mtextInput.getText().toString();
+			mtextOutput.setText(text);
+			mtextInput.setText("");
+		}
+	}
+    
+}
