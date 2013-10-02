@@ -2,6 +2,9 @@ package com.example.laser;
 
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.graphics.Color;
@@ -23,7 +26,7 @@ public class HostActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_host);
 		setupWidget();
-		//addItemsOnSpinner();
+		addItemsOnSpinner();
 		
 	}
     public void setupWidget() {
@@ -34,13 +37,16 @@ public class HostActivity extends Activity {
     	
     }
     public void addItemsOnSpinner() {
-    /*
-    Spinner spinner = (Spinner) findViewById(R.id.players);
-    ArrayList<String> spinnerArray = new ArrayList<String>();    
-    spinnerAr
-    ArrayAdapter  mAdapter = new ArrayAdapter (this, spinnerArray);
-    mSpinner1.setAdapter(mAdapter);
-    */
+        List<String> SpinnerArray =  new ArrayList<String>();
+        SpinnerArray.add("2");
+        SpinnerArray.add("4");
+        SpinnerArray.add("8");
+        SpinnerArray.add("16");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, SpinnerArray);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        Spinner Items = (Spinner) findViewById(R.id.players);
+        Items.setAdapter(adapter);
       }
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
