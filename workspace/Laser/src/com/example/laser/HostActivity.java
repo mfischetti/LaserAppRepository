@@ -10,6 +10,8 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.text.InputFilter;
 import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -18,9 +20,12 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
-public class HostActivity extends Activity {
+public class HostActivity extends Activity implements OnClickListener {
 	EditText HostName;
 	EditText PasswordName;
+	Spinner Items;
+	TextView test;
+	Button start;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -34,7 +39,9 @@ public class HostActivity extends Activity {
     	HostName.setFilters(new InputFilter[] {new InputFilter.LengthFilter(12)});	//sets max characters length
     	PasswordName = (EditText)findViewById(R.id.editText1);
     	PasswordName.setFilters(new InputFilter[] {new InputFilter.LengthFilter(12)});	//sets max characters length
-    	
+    	test = (TextView)findViewById(R.id.text1);
+    	start = (Button)findViewById(R.id.buttonhost);
+    	start.setOnClickListener(this);
     }
     public void addItemsOnSpinner() {
         List<String> SpinnerArray =  new ArrayList<String>();
@@ -45,7 +52,7 @@ public class HostActivity extends Activity {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, SpinnerArray);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Spinner Items = (Spinner) findViewById(R.id.players);
+        Items = (Spinner) findViewById(R.id.players);
         Items.setAdapter(adapter);
       }
 	@Override
@@ -53,6 +60,15 @@ public class HostActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.host, menu);
 		return true;
+	}
+	@Override
+	public void onClick(View v) {
+		if(v.getId() == R.id.buttonhost){
+			String selected = Items.getSelectedItem().toString();
+			test.setText(selected);
+			
+			
+		}
 	}
 
 }

@@ -77,4 +77,22 @@
         android:layout_below="@+id/editText1"
         android:layout_marginTop="32dp" />
 
+    <TextView
+        android:id="@+id/text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/players"
+        android:layout_marginTop="88dp"
+        android:layout_toRightOf="@+id/servername"
+        android:text="TextView" />
+
+    <Button
+        android:id="@+id/buttonhost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text1"
+        android:layout_marginTop="22dp"
+        android:layout_toRightOf="@+id/servername"
+        android:text="Button" />
+
 </RelativeLayout>
