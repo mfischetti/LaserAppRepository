@@ -40,6 +40,9 @@ public class HostActivity extends Activity implements OnClickListener {
     	PasswordName = (EditText)findViewById(R.id.editText1);
     	PasswordName.setFilters(new InputFilter[] {new InputFilter.LengthFilter(12)});	//sets max characters length
     	test = (TextView)findViewById(R.id.text1);
+    	TextView title = (TextView)findViewById(R.id.title);
+    	title.setTextColor(Color.RED);
+
     	start = (Button)findViewById(R.id.buttonhost);
     	start.setOnClickListener(this);
     }
