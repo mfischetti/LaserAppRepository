@@ -36,6 +36,7 @@ public class HostActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_host);
 		setupWidget();
 		addItemsOnSpinner();
+		//test sync
 		
 	}
     public void setupWidget() {
