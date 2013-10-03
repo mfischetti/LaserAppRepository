@@ -25,6 +25,7 @@
         android:layout_below="@+id/findtitle"
         android:layout_marginTop="36dp"
         android:text="Server Name:"
+        android:textColor="#A9F5E1"
         android:textSize="15sp" />
 
     <EditText
@@ -49,6 +50,7 @@
         android:layout_below="@+id/name1"
         android:layout_marginTop="43dp"
         android:text="Password:"
+        android:textColor="#A9F5E1"
         android:textSize="15sp" />
 
     <TextView
@@ -59,6 +61,7 @@
         android:layout_alignTop="@+id/players"
         android:layout_marginTop="15dp"
         android:text="Players:"
+        android:textColor="#A9F5E1"
         android:textSize="15sp" />
 
     <EditText
@@ -79,21 +82,46 @@
         android:layout_marginTop="32dp" />
 
     <TextView
-        android:id="@+id/text1"
+        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
         android:layout_below="@+id/players"
-        android:layout_marginTop="88dp"
-        android:layout_toRightOf="@+id/servername"
-        android:text="TextView" />
+        android:layout_marginTop="34dp"
+        android:text="Game Mode"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#A9F5E1" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1" >
+
+        <RadioButton
+            android:id="@+id/radio0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Team"
+            android:textColor="#A9F5E1" />
+
+        <RadioButton
+            android:id="@+id/radio1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Free For All"
+            android:textColor="#A9F5E1" />
+    </RadioGroup>
 
     <Button
         android:id="@+id/buttonhost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/text1"
-        android:layout_marginTop="22dp"
-        android:layout_toRightOf="@+id/servername"
+        android:layout_alignRight="@+id/players"
+        android:layout_alignTop="@+id/radioGroup1"
+        android:layout_marginRight="30dp"
         android:text="Button" />
 
 </RelativeLayout>

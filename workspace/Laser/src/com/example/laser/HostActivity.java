@@ -8,6 +8,7 @@ import java.util.List;
 import android.os.Bundle;
 import android.app.Activity;
 import android.graphics.Color;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.view.Menu;
 import android.view.View;
@@ -49,10 +50,10 @@ public class HostActivity extends Activity implements OnClickListener {
     	HostName.setFilters(new InputFilter[] {new InputFilter.LengthFilter(12)});	//sets max characters length
     	PasswordName = (EditText)findViewById(R.id.editText1);
     	PasswordName.setFilters(new InputFilter[] {new InputFilter.LengthFilter(12)});	//sets max characters length
-    	test = (TextView)findViewById(R.id.text1);
+    	//test = (TextView)findViewById(R.id.text1);
     	TextView title = (TextView)findViewById(R.id.findtitle);
     	title.setTextColor(Color.RED);
-
+    	
     	start = (Button)findViewById(R.id.buttonhost);
     	start.setOnClickListener(this);
     }
@@ -78,7 +79,9 @@ public class HostActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		if(v.getId() == R.id.buttonhost){
 			String selected = Items.getSelectedItem().toString();
-			test.setText(selected);
+			Editable texttest = HostName.getText();
+			//test.setText(texttest);
+		
 			
 			
 		}
