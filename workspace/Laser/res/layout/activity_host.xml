@@ -10,7 +10,7 @@
     tools:context=".HostActivity" >
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/findtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -22,7 +22,7 @@
         android:id="@+id/servername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title"
+        android:layout_below="@+id/findtitle"
         android:layout_marginTop="36dp"
         android:text="Server Name:"
         android:textSize="15sp" />
@@ -52,7 +52,7 @@
         android:textSize="15sp" />
 
     <TextView
-        android:id="@+id/playernumber"
+        android:id="@+id/playersname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/passwordname"

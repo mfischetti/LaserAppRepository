@@ -26,6 +26,9 @@ public class HostActivity extends Activity implements OnClickListener {
 	Spinner Items;
 	TextView test;
 	Button start;
+	TextView servername;
+	TextView playername;
+	TextView passwordtext;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,12 +38,19 @@ public class HostActivity extends Activity implements OnClickListener {
 		
 	}
     public void setupWidget() {
+    	servername = (TextView)findViewById(R.id.servername);
+    	servername.setTextColor(Color.WHITE);
+    	playername = (TextView)findViewById(R.id.playersname);
+    	playername.setTextColor(Color.WHITE);
+    	passwordtext = (TextView)findViewById(R.id.passwordname);
+    	passwordtext.setTextColor(Color.WHITE);
+
     	HostName = (EditText)findViewById(R.id.name1);
     	HostName.setFilters(new InputFilter[] {new InputFilter.LengthFilter(12)});	//sets max characters length
     	PasswordName = (EditText)findViewById(R.id.editText1);
     	PasswordName.setFilters(new InputFilter[] {new InputFilter.LengthFilter(12)});	//sets max characters length
     	test = (TextView)findViewById(R.id.text1);
-    	TextView title = (TextView)findViewById(R.id.title);
+    	TextView title = (TextView)findViewById(R.id.findtitle);
     	title.setTextColor(Color.RED);
 
     	start = (Button)findViewById(R.id.buttonhost);

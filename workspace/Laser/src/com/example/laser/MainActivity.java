@@ -30,8 +30,8 @@ public class MainActivity extends Activity implements OnClickListener {
     	find.setOnClickListener(this);
     	Button help = (Button)findViewById(R.id.help);
     	help.setOnClickListener(this);
-    	mTitle = (TextView)findViewById(R.id.title);
-    	mTitle.setTextColor(Color.BLUE);
+    	mTitle = (TextView)findViewById(R.id.findtitle);
+    	mTitle.setTextColor(Color.RED);
 		// TODO Auto-generated method stub
 		
 	}
