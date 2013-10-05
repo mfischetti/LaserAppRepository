@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -81,7 +82,8 @@ public class HostActivity extends Activity implements OnClickListener {
 		if(v.getId() == R.id.buttonhost){
 			String selected = Items.getSelectedItem().toString();
 			Editable texttest = HostName.getText();
-			//test.setText(texttest);
+			Intent next = new Intent(this, HostServerActivity.class);	
+			startActivity(next);
 		
 			
 			
