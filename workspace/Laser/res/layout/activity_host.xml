@@ -65,7 +65,7 @@
         android:textSize="15sp" />
 
     <EditText
-        android:id="@+id/editText1"
+        android:id="@+id/password1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/passwordname"
@@ -77,8 +77,8 @@
         android:id="@+id/players"
         android:layout_width="wrap_content"
         android:layout_height="50sp"
-        android:layout_alignLeft="@+id/editText1"
-        android:layout_below="@+id/editText1"
+        android:layout_alignLeft="@+id/password1"
+        android:layout_below="@+id/password1"
         android:layout_marginTop="32dp" />
 
     <TextView
