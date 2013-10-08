@@ -36,7 +36,7 @@ public class HostServerActivity extends Activity {
  
     try {
  
-     client = new Socket("192.168.56.1", 8888);  //connect to server
+     client = new Socket("128.4.201.20", 4444);  //connect to server
      printwriter = new PrintWriter(client.getOutputStream(),true);
      printwriter.write(messsage);  //write the message to output stream
  
