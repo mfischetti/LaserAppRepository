@@ -18,6 +18,8 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -31,6 +33,9 @@ public class HostActivity extends Activity implements OnClickListener {
 	TextView servername;
 	TextView playername;
 	TextView passwordtext;
+	RadioGroup mode;
+	RadioButton tempRadio;
+	public String GameInfo;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,6 +52,7 @@ public class HostActivity extends Activity implements OnClickListener {
     	playername.setTextColor(Color.WHITE);
     	passwordtext = (TextView)findViewById(R.id.passwordname);
     	passwordtext.setTextColor(Color.WHITE);
+    	mode = (RadioGroup)findViewById(R.id.radioGroup1);
 
     	HostName = (EditText)findViewById(R.id.name1);
     	HostName.setFilters(new InputFilter[] {new InputFilter.LengthFilter(12)});	//sets max characters length
@@ -80,14 +86,23 @@ public class HostActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		if(v.getId() == R.id.buttonhost){
-			String selected = Items.getSelectedItem().toString();
+			GetRadioSelected();
+			GameInfo = HostName.getText().toString()+ "~"
+					+ PasswordName.getText().toString()+"~"+Items.getSelectedItem().toString()+
+					"~"+tempRadio.getText().toString();
+			//String selected = Items.getSelectedItem().toString();
 			Editable texttest = HostName.getText();
 			Intent next = new Intent(this, HostServerActivity.class);	
+			next.putExtra("GameInfo", GameInfo.toString());
 			startActivity(next);
 		
 			
 			
 		}
+	}
+	public void GetRadioSelected() {
+        int selectedId = mode.getCheckedRadioButtonId();
+        tempRadio = (RadioButton) findViewById(selectedId);
 	}
 
 }
