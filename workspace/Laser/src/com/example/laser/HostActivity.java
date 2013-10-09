@@ -87,10 +87,10 @@ public class HostActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		if(v.getId() == R.id.buttonhost){
 			GetRadioSelected();
+			//test
 			GameInfo = HostName.getText().toString()+ "~"
 					+ PasswordName.getText().toString()+"~"+Items.getSelectedItem().toString()+
 					"~"+tempRadio.getText().toString();
-			//String selected = Items.getSelectedItem().toString();
 			Editable texttest = HostName.getText();
 			Intent next = new Intent(this, HostServerActivity.class);	
 			next.putExtra("GameInfo", GameInfo.toString());
