@@ -36,6 +36,10 @@ public class HostActivity extends Activity implements OnClickListener {
 	RadioGroup mode;
 	RadioButton tempRadio;
 	public String GameInfo;
+	public String game_name;
+	public String password;
+	public String players;
+	public String game_mode;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -88,12 +92,19 @@ public class HostActivity extends Activity implements OnClickListener {
 		if(v.getId() == R.id.buttonhost){
 			GetRadioSelected();
 			//test
+			game_name = HostName.getText().toString();
+			password = PasswordName.getText().toString();
+			players = Items.getSelectedItem().toString();
+			game_mode = tempRadio.getText().toString();
 			GameInfo = HostName.getText().toString()+ "~"
 					+ PasswordName.getText().toString()+"~"+Items.getSelectedItem().toString()+
 					"~"+tempRadio.getText().toString();
 			Editable texttest = HostName.getText();
 			Intent next = new Intent(this, HostServerActivity.class);	
-			next.putExtra("GameInfo", GameInfo.toString());
+			next.putExtra("Game Name", game_name.toString());
+			next.putExtra("Password",password.toString()); 
+			next.putExtra("Players", players); 
+			next.putExtra("Game Mode", game_mode);
 			startActivity(next);
 		
 			
