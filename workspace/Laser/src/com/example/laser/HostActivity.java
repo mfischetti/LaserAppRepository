@@ -5,12 +5,22 @@ package com.example.laser;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.example.laser.HostServerActivity.CreateNewGame;
+
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,6 +35,19 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 public class HostActivity extends Activity implements OnClickListener {
+	
+	private ProgressDialog pDialog;
+
+	JSONParser jsonParser = new JSONParser();
+	
+	private static String url_create_product = "http://128.4.223.234/laserDatabase/android_connect/create_product.php";
+	//192.168.1.15
+	//udel - 128.4.222.193
+	//128.4.223.234
+	
+	// JSON Node names
+	private static final String TAG_SUCCESS = "success";
+	
 	EditText HostName;
 	EditText PasswordName;
 	Spinner Items;
@@ -40,6 +63,7 @@ public class HostActivity extends Activity implements OnClickListener {
 	public String password;
 	public String players;
 	public String game_mode;
+	public String current_players;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -96,7 +120,8 @@ public class HostActivity extends Activity implements OnClickListener {
 			password = PasswordName.getText().toString();
 			players = Items.getSelectedItem().toString();
 			game_mode = tempRadio.getText().toString();
-			GameInfo = HostName.getText().toString()+ "~"
+			current_players = "1";
+			/*GameInfo = HostName.getText().toString()+ "~"
 					+ PasswordName.getText().toString()+"~"+Items.getSelectedItem().toString()+
 					"~"+tempRadio.getText().toString();
 			Editable texttest = HostName.getText();
@@ -105,7 +130,9 @@ public class HostActivity extends Activity implements OnClickListener {
 			next.putExtra("Password",password.toString()); 
 			next.putExtra("Players", players); 
 			next.putExtra("Game Mode", game_mode);
-			startActivity(next);
+			startActivity(next);*/
+			new CreateNewGame().execute();
+			
 		
 			
 			
@@ -114,6 +141,67 @@ public class HostActivity extends Activity implements OnClickListener {
 	public void GetRadioSelected() {
         int selectedId = mode.getCheckedRadioButtonId();
         tempRadio = (RadioButton) findViewById(selectedId);
+	}
+	class CreateNewGame extends AsyncTask<String, String, String>{
+
+		protected void onPreExecute(){
+			
+			super.onPreExecute();
+			pDialog = new ProgressDialog(HostActivity.this);
+			pDialog.setMessage("Creating Game..");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(true);
+			pDialog.show();
+		}
+		@Override
+		protected String doInBackground(String... arg0) {
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+		//	params.add(new BasicNameValuePair("pid","1"));
+			params.add(new BasicNameValuePair("server_name", game_name));
+			params.add(new BasicNameValuePair("password", password));
+			params.add(new BasicNameValuePair("current_players", current_players));
+			params.add(new BasicNameValuePair("max_players", players));
+			
+			
+			params.add(new BasicNameValuePair("game_mode", game_mode));
+
+			JSONObject json = jsonParser.makeHttpRequest(url_create_product,
+					"POST", params);
+			
+			// check log cat fro response
+			Log.d("Create Response", json.toString());
+
+			// check for success tag
+			try {
+				int success = json.getInt(TAG_SUCCESS);
+
+				if (success == 1) {
+					// successfully created product
+					Intent i = new Intent(getApplicationContext(), FindActivity.class);
+					startActivity(i);
+					
+					// closing this screen
+					finish();
+				} else {
+					// failed to create product
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+		/**
+		 * After completing background task Dismiss the progress dialog
+		 * **/
+		protected void onPostExecute(String file_url) {
+			// dismiss the dialog once done
+			pDialog.dismiss();
+		}
+		
+		
+		
 	}
 
 }
