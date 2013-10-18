@@ -8,5 +8,6 @@
     <string name="title_activity_find">FindActivity</string>
     <string name="title_activity_help">HelpActivity</string>
     <string name="title_activity_host_server">HostServerActivity</string>
+    <string name="title_activity_join">JoinActivity</string>
 
 </resources>

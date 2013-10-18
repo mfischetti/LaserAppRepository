@@ -26,7 +26,7 @@ public class HostServerActivity extends Activity {
 
 	JSONParser jsonParser = new JSONParser();
 	
-	private static String url_create_product = "http://192.168.1.15/laserDatabase/android_connect/create_product.php";
+	private static String url_create_product = "http://128.4.204.51/laserDatabase/android_connect/create_product.php";
 	//192.168.1.15
 	//udel - 128.4.222.193
 	

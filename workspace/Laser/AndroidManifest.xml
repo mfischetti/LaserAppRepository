@@ -46,6 +46,10 @@
             android:name="com.example.laser.HostServerActivity"
             android:label="@string/title_activity_host_server" >
         </activity>
+        <activity
+            android:name="com.example.laser.JoinActivity"
+            android:label="@string/title_activity_join" >
+        </activity>
     </application>
 
 </manifest>

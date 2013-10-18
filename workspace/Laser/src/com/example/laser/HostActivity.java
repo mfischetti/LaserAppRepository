@@ -40,7 +40,9 @@ public class HostActivity extends Activity implements OnClickListener {
 
 	JSONParser jsonParser = new JSONParser();
 	
-	private static String url_create_product = "http://128.4.223.234/laserDatabase/android_connect/create_product.php";
+	private static String url_create_product = "http://128.4.204.51/laserDatabase/android_connect/create_product.php";
+    private static String url_all_products = "http://128.4.204.51/laserDatabase/android_connect/get_all_products.php";
+
 	//192.168.1.15
 	//udel - 128.4.222.193
 	//128.4.223.234
@@ -120,7 +122,7 @@ public class HostActivity extends Activity implements OnClickListener {
 			password = PasswordName.getText().toString();
 			players = Items.getSelectedItem().toString();
 			game_mode = tempRadio.getText().toString();
-			current_players = "1";
+			current_players = "0";
 			/*GameInfo = HostName.getText().toString()+ "~"
 					+ PasswordName.getText().toString()+"~"+Items.getSelectedItem().toString()+
 					"~"+tempRadio.getText().toString();
@@ -168,6 +170,7 @@ public class HostActivity extends Activity implements OnClickListener {
 			JSONObject json = jsonParser.makeHttpRequest(url_create_product,
 					"POST", params);
 			
+			
 			// check log cat fro response
 			Log.d("Create Response", json.toString());
 
@@ -176,12 +179,16 @@ public class HostActivity extends Activity implements OnClickListener {
 				int success = json.getInt(TAG_SUCCESS);
 
 				if (success == 1) {
+					json = jsonParser.makeHttpRequest(url_all_products,
+							"GET", params);
+					String gamepid = json.getString("pid");
 					// successfully created product
-					Intent i = new Intent(getApplicationContext(), FindActivity.class);
+					Intent i = new Intent(getApplicationContext(), JoinActivity.class);
+					i.putExtra("gamepid", gamepid);
+					i.putExtra("current_players", current_players);
 					startActivity(i);
 					
 					// closing this screen
-					finish();
 				} else {
 					// failed to create product
 				}

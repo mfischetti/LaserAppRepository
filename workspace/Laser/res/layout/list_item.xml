@@ -21,4 +21,10 @@
         android:textSize="17dip"
         android:textStyle="bold" />
     
+        <TextView
+        android:id="@+id/current_players"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+    
 </LinearLayout>
