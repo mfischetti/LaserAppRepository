@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,11 +40,11 @@ public class JoinActivity extends Activity {
 	JSONParser jsonParser = new JSONParser();
 
 	// single product url
-	private static String url_product_detials = "http://128.4.204.51/laserDatabase/android_connect/get_game_info.php";
+	private static String url_product_detials = "http://10.0.0.16/laserDatabase/android_connect/get_game_info.php";
 
 
 	// url to update product
-	private static final String url_update_player = "http://128.4.204.51/laserDatabase/android_connect/add_player.php";
+	private static final String url_update_player = "http://10.0.0.16/laserDatabase/android_connect/add_player.php";
 
 	// url to delete product
 
@@ -71,11 +72,15 @@ public class JoinActivity extends Activity {
 		Bundle bundle = getIntent().getExtras();
 		pid = bundle.getString("gamepid");
 		currentPlayers = bundle.getString("current_players");
-
+		String player1 = bundle.getString("player1");
+    	
+		TextView players = (TextView)findViewById(R.id.playerslist);
+    	players.setTextColor(Color.RED);
+    	players.setText(player1);
 
 		// Getting complete product details in background thread
-		new UpdateGameInfo().execute();
-		new LoadPlayers().execute();
+		//new UpdateGameInfo().execute();
+		//new LoadPlayers().execute();
 
 	}
 
