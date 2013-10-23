@@ -3,6 +3,7 @@ package com.example.laser;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -31,12 +32,13 @@ public class FindActivity extends ListActivity {
 
 	// Creating JSON Parser object
 	JSONParser jParser = new JSONParser();
-
+	JSONParser jsonParser = new JSONParser();
 	ArrayList<HashMap<String, String>> productsList;
 
 	// url to get all products list
-	private static String url_all_products = "http://10.0.0.16/laserDatabase/android_connect/get_all_products.php";
-	private static String url_get_gameinfo = "http://10.0.0.16/laserDatabase/android_connect/get_game_info.php";
+	private static String url_all_products = "http://128.4.220.7/laserDatabase/android_connect/get_all_products.php";
+	private static String url_get_gameinfo = "http://128.4.220.7/laserDatabase/android_connect/get_game_info.php";
+	private static String url_update_gameinfo = "http://128.4.220.7/laserDatabase/android_connect/update_game_info.php";
 
 	//192.168.1.15
 	//udel 128.4.222.193
@@ -51,9 +53,11 @@ public class FindActivity extends ListActivity {
 	private static final String TAG_GAME_INFO = "game_info";
 	String currentplayers;
 	String pickedpid;
+	String myplayer;
 	String player1;
 	String player2;
 	Boolean ContinueOn = true;//false;
+	int left;
 
 	// products JSONArray
 	JSONArray products = null;
@@ -264,6 +268,8 @@ public class FindActivity extends ListActivity {
 					// products found
 					// Getting Array of Products
 					products = json.getJSONArray(TAG_GAME_INFO);
+					int[] players;
+					players = new int[8];
 
 					// looping through All Products
 					for (int i = 0; i < products.length(); i++) {
@@ -274,18 +280,13 @@ public class FindActivity extends ListActivity {
 						player2 = c.getString("player2");
 						//String player3 = c.getString("player3");
 						//String player4 = c.getString("player4");
-					}
+						players[0]=Integer.valueOf(player1);
+						players[1]=Integer.valueOf(player2);
+
+					myplayer= pickRandomPlayer(players);
 					// Starting new intent
-					Intent in = new Intent(getApplicationContext(),
-							JoinActivity.class);
-					// sending pid to next activity
-					in.putExtra("gamepid", pickedpid);
-					in.putExtra("current_players", currentplayers);
-					in.putExtra("player1", player1);
-
-
-					// starting new activity and expecting some response back
-					startActivity(in);
+				
+				}
 				}
 				 else {
 					// failed to update product
@@ -296,28 +297,49 @@ public class FindActivity extends ListActivity {
 
 			return null;
 		}
+		String pickRandomPlayer(int[] players){
+			int[] playersLeft;
+			int[] randoms;
+			left = 0;
+			playersLeft = new int[8];
+			
+			for(int i = 1; i<=8; i++){
+				playersLeft[i]=i;
+			}
+			for(int i =0; i<8;i++){
+				for(int j =0; j<8;j++){
+					if(playersLeft[i]==players[j]){
+						playersLeft[i]=0;
+						left++;
+					}
+				}
+				
+			}
+			randoms = new int[8-left];
+			int count = 0;
+			for( int j =0; j<8;j++){
+				if(playersLeft[j] != 0){
+					randoms[count]=playersLeft[j];
+					count++;
+				}
+			}
+			Random random = new Random();
 
+			return ""+randoms[random.nextInt(randoms.length)];
+			
+			
+			
+			
+		
+		}
 		/**
 		 * After completing background task Dismiss the progress dialog
 		 * **/
 		protected void onPostExecute(String file_url) {
 			// dismiss the dialog after getting all products
 			pDialog.dismiss();
-			// updating UI from Background Thread
-			runOnUiThread(new Runnable() {
-				public void run() {
-					/**
-					 * Updating parsed JSON data into ListView
-					 * */
-					ListAdapter adapter = new SimpleAdapter(
-							FindActivity.this, productsList,
-							R.layout.list_item, new String[] { TAG_PID, TAG_GAME_INFO,
-									TAG_SERVER_NAME, TAG_CURRENT_PLAYERS, TAG_MAX_PLAYERS, TAG_GAME_MODE},
-									new int[] { R.id.pid, R.id.gameinfo});
-					// updating listview
-					setListAdapter(adapter);
-				}
-			});
+			
+//			new JoiningGame().execute();
 
 		}
 
@@ -341,38 +363,39 @@ public class FindActivity extends ListActivity {
 		 * getting All products from url
 		 * */
 		protected String doInBackground(String... args) {
-			
-			/*
-			// Building Parameters
-			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("game_id", pickedpid));
-			params.add(new BasicNameValuePair("player", number));
+			left = left +1;
+			List<NameValuePair> params2 = new ArrayList<NameValuePair>();
+			params2.add(new BasicNameValuePair("game_id", pickedpid));
+			params2.add(new BasicNameValuePair("player", myplayer));
+			params2.add(new BasicNameValuePair("left",""+left));
 
-			// sending modified data through http request
-			// Notice that update product url accepts POST method
-			JSONObject json = jsonParser.makeHttpRequest(url_update_product,
-					"POST", params);
+			JSONObject json = jsonParser.makeHttpRequest(url_update_gameinfo,
+					"POST", params2);
 
-			// check json success tag
+
+			// check log cat fro response
+			Log.d("Create Response", json.toString());
+
+			// check for success tag
 			try {
 				int success = json.getInt(TAG_SUCCESS);
-				
+
 				if (success == 1) {
-					// successfully updated
-					Intent i = getIntent();
-					// send result code 100 to notify about product update
-					setResult(100, i);
-					finish();
+
+
+					// closing this screen
 				} else {
-					// failed to update product
+					// failed to create product
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			*/
+
 			return null;
-			
 		}
+
+	
+		
 
 		/**
 		 * After completing background task Dismiss the progress dialog
@@ -381,20 +404,17 @@ public class FindActivity extends ListActivity {
 			// dismiss the dialog after getting all products
 			pDialog.dismiss();
 			// updating UI from Background Thread
-			runOnUiThread(new Runnable() {
-				public void run() {
-					/**
-					 * Updating parsed JSON data into ListView
-					 * */
-					ListAdapter adapter = new SimpleAdapter(
-							FindActivity.this, productsList,
-							R.layout.list_item, new String[] { TAG_PID, TAG_GAME_INFO,
-									TAG_SERVER_NAME, TAG_CURRENT_PLAYERS, TAG_MAX_PLAYERS, TAG_GAME_MODE},
-									new int[] { R.id.pid, R.id.gameinfo});
-					// updating listview
-					setListAdapter(adapter);
-				}
-			});
+	
+			Intent in = new Intent(getApplicationContext(),
+					JoinActivity.class);
+			// sending pid to next activity
+			in.putExtra("gamepid", pickedpid);
+			in.putExtra("current_players", currentplayers);
+			in.putExtra("player1", player1);
+
+
+			// starting new activity and expecting some response back
+			startActivity(in);
 
 		}
 

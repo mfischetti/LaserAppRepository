@@ -40,11 +40,11 @@ public class JoinActivity extends Activity {
 	JSONParser jsonParser = new JSONParser();
 
 	// single product url
-	private static String url_product_detials = "http://10.0.0.16/laserDatabase/android_connect/get_game_info.php";
+	private static String url_product_detials = "http://128.4.220.7/laserDatabase/android_connect/get_game_info.php";
 
 
 	// url to update product
-	private static final String url_update_player = "http://10.0.0.16/laserDatabase/android_connect/add_player.php";
+	private static final String url_update_player = "http://128.4.220.7/laserDatabase/android_connect/add_player.php";
 
 	// url to delete product
 
