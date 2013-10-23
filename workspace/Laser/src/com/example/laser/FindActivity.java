@@ -41,7 +41,7 @@ public class FindActivity extends ListActivity {
 	private static String url_get_gameinfo = "http://128.4.202.239/laserDatabase/android_connect/get_game_info.php";
 	private static String url_update_gameinfo = "http://128.4.202.239/laserDatabase/android_connect/update_game_info.php";
 	private static String url_get_game = "http://128.4.202.239/laserDatabase/android_connect/get_game.php";
-
+	private static String url_update_game =  "http://128.4.202.239/laserDatabase/android_connect/update_game.php";
 	//192.168.1.15
 	//udel 128.4.202.239
 	// JSON Node names
@@ -103,7 +103,7 @@ public class FindActivity extends ListActivity {
 
 				// getting JSON string from URL
 				JSONObject json = jParser.makeHttpRequest(url_get_game, "GET", params);
-
+				
 
 				// Check your log cat for JSON reponse
 				Log.d("All Products: ", json.toString());
@@ -149,7 +149,52 @@ public class FindActivity extends ListActivity {
 				//Process char
 
 			}
+
+			private void UpdateCurrentPlayers() {
+		
+				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				params.add(new BasicNameValuePair("game_id", pickedpid));
+				params.add(new BasicNameValuePair("current_players", currentplayers));
+				
+				// getting JSON string from URL
+				JSONObject json = jParser.makeHttpRequest(url_update_game, "POST", params);
+				
+
+				// Check your log cat for JSON reponse
+				Log.d("All Products: ", json.toString());
+
+				try {
+					// Checking for SUCCESS TAG
+					int success = json.getInt(TAG_SUCCESS);
+
+					if (success == 1) {
+						// products found
+						// Getting Array of Products
+						products = json.getJSONArray(TAG_GAMES);
+
+
+						// looping through All Products
+
+						JSONObject c = products.getJSONObject(0);
+
+			
+
+
+
+						// Starting new intent
+
+
+					}
+					else {
+						// failed to update product
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				
+			}
 		});
+	
 
 	}
 
