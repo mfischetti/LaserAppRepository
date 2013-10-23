@@ -272,21 +272,32 @@ public class FindActivity extends ListActivity {
 					players = new int[8];
 
 					// looping through All Products
-					for (int i = 0; i < products.length(); i++) {
-						JSONObject c = products.getJSONObject(i);
+				
+						JSONObject c = products.getJSONObject(0);
 
 						// Storing each json item in variable
 						player1 = c.getString("player1");
 						player2 = c.getString("player2");
-						//String player3 = c.getString("player3");
-						//String player4 = c.getString("player4");
+						String player3 = c.getString("player3");
+						String player4 = c.getString("player4");
+						String player5 = c.getString("player5");
+						String player6 = c.getString("player6");
+						String player7 = c.getString("player7");
+						String player8 = c.getString("player8");
 						players[0]=Integer.valueOf(player1);
 						players[1]=Integer.valueOf(player2);
-
-					myplayer= pickRandomPlayer(players);
+						players[2]=Integer.valueOf(player3);
+						players[3]=Integer.valueOf(player4);
+						players[4]=Integer.valueOf(player5);
+						players[5]=Integer.valueOf(player6);
+						players[6]=Integer.valueOf(player7);
+						players[7]=Integer.valueOf(player8);
+						
+				
 					// Starting new intent
 				
-				}
+				
+					myplayer= pickRandomPlayer(players);
 				}
 				 else {
 					// failed to update product
@@ -304,11 +315,11 @@ public class FindActivity extends ListActivity {
 			playersLeft = new int[8];
 			
 			for(int i = 1; i<=8; i++){
-				playersLeft[i]=i;
+				playersLeft[i-1]=i;
 			}
 			for(int i =0; i<8;i++){
 				for(int j =0; j<8;j++){
-					if(playersLeft[i]==players[j]){
+					if(playersLeft[i]==players[j] && playersLeft[i]!=0 && players[j] != 0){
 						playersLeft[i]=0;
 						left++;
 					}
@@ -325,7 +336,7 @@ public class FindActivity extends ListActivity {
 			}
 			Random random = new Random();
 
-			return ""+randoms[random.nextInt(randoms.length)];
+			return  ""+randoms[random.nextInt(randoms.length)];
 			
 			
 			
@@ -339,7 +350,7 @@ public class FindActivity extends ListActivity {
 			// dismiss the dialog after getting all products
 			pDialog.dismiss();
 			
-//			new JoiningGame().execute();
+	new JoiningGame().execute();
 
 		}
 
@@ -385,6 +396,7 @@ public class FindActivity extends ListActivity {
 
 					// closing this screen
 				} else {
+					
 					// failed to create product
 				}
 			} catch (JSONException e) {
@@ -410,7 +422,7 @@ public class FindActivity extends ListActivity {
 			// sending pid to next activity
 			in.putExtra("gamepid", pickedpid);
 			in.putExtra("current_players", currentplayers);
-			in.putExtra("player1", player1);
+			in.putExtra("player1", ""+left);
 
 
 			// starting new activity and expecting some response back
