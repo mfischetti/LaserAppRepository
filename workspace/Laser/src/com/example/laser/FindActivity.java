@@ -1,5 +1,6 @@
 package com.example.laser;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,12 +37,13 @@ public class FindActivity extends ListActivity {
 	ArrayList<HashMap<String, String>> productsList;
 
 	// url to get all products list
-	private static String url_all_products = "http://128.4.220.7/laserDatabase/android_connect/get_all_products.php";
-	private static String url_get_gameinfo = "http://128.4.220.7/laserDatabase/android_connect/get_game_info.php";
-	private static String url_update_gameinfo = "http://128.4.220.7/laserDatabase/android_connect/update_game_info.php";
+	private static String url_all_products = "http://128.4.202.239/laserDatabase/android_connect/get_all_products.php";
+	private static String url_get_gameinfo = "http://128.4.202.239/laserDatabase/android_connect/get_game_info.php";
+	private static String url_update_gameinfo = "http://128.4.202.239/laserDatabase/android_connect/update_game_info.php";
+	private static String url_get_game = "http://128.4.202.239/laserDatabase/android_connect/get_game.php";
 
 	//192.168.1.15
-	//udel 128.4.222.193
+	//udel 128.4.202.239
 	// JSON Node names
 	private static final String TAG_SUCCESS = "success";
 	private static final String TAG_GAMES = "games";
@@ -51,6 +53,8 @@ public class FindActivity extends ListActivity {
 	private static final String TAG_CURRENT_PLAYERS = "current_players";
 	private static final String TAG_GAME_MODE = "game_mode";
 	private static final String TAG_GAME_INFO = "game_info";
+
+
 	String currentplayers;
 	String pickedpid;
 	String myplayer;
@@ -86,34 +90,64 @@ public class FindActivity extends ListActivity {
 				// getting values from selected ListItem
 				pickedpid = ((TextView) view.findViewById(R.id.pid)).getText()
 						.toString();
-				currentplayers = ((TextView) view.findViewById(R.id.gameinfo)).getText()
-						.toString();
-				if(checkiffull(currentplayers)){
+
+				if(checkiffull()){
 					new getGameInfo().execute();
 				}
 			}
 
-			private Boolean checkiffull(String s) {
-				char tempcurrent = 0;
-				char tempmax = 0;
-				for (int i = 0; i < s.length(); i++){
-					char c = s.charAt(i);
-					if (c == '/'){
-						tempcurrent = s.charAt(i-1);
-						tempmax = s.charAt(i+1);
-						break;
-					}
+			private Boolean checkiffull() {
+				String MaxPlayers = null;
+				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				params.add(new BasicNameValuePair("game_id", pickedpid));
 
-					//Process char
+				// getting JSON string from URL
+				JSONObject json = jParser.makeHttpRequest(url_get_game, "GET", params);
+
+
+				// Check your log cat for JSON reponse
+				Log.d("All Products: ", json.toString());
+
+				try {
+					// Checking for SUCCESS TAG
+					int success = json.getInt(TAG_SUCCESS);
+
+					if (success == 1) {
+						// products found
+						// Getting Array of Products
+						products = json.getJSONArray(TAG_GAMES);
+
+
+						// looping through All Products
+
+						JSONObject c = products.getJSONObject(0);
+
+						// Storing each json item in variable
+						currentplayers = c.getString("current_players");
+						MaxPlayers = c.getString("max_players");
+
+
+
+						// Starting new intent
+
+
+					}
+					else {
+						// failed to update product
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
 				}
 
-				if (Character.getNumericValue(tempcurrent) < Character.getNumericValue(tempmax)){
-					currentplayers =  Character.toString(tempcurrent);
+				if (Integer.valueOf(currentplayers)<Integer.valueOf(MaxPlayers)){
+					UpdateCurrentPlayers();
 					return true;
 				}
 				else{
 					return false;
 				}
+				//Process char
+
 			}
 		});
 
@@ -247,15 +281,15 @@ public class FindActivity extends ListActivity {
 		 * getting All products from url
 		 * */
 		protected String doInBackground(String... args) {
-			
-			
+
+
 			// Building Parameters
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("game_id", pickedpid));
 
 			// getting JSON string from URL
 			JSONObject json = jParser.makeHttpRequest(url_get_gameinfo, "GET", params);
-			
+
 
 			// Check your log cat for JSON reponse
 			Log.d("All Products: ", json.toString());
@@ -272,34 +306,34 @@ public class FindActivity extends ListActivity {
 					players = new int[8];
 
 					// looping through All Products
-				
-						JSONObject c = products.getJSONObject(0);
 
-						// Storing each json item in variable
-						player1 = c.getString("player1");
-						player2 = c.getString("player2");
-						String player3 = c.getString("player3");
-						String player4 = c.getString("player4");
-						String player5 = c.getString("player5");
-						String player6 = c.getString("player6");
-						String player7 = c.getString("player7");
-						String player8 = c.getString("player8");
-						players[0]=Integer.valueOf(player1);
-						players[1]=Integer.valueOf(player2);
-						players[2]=Integer.valueOf(player3);
-						players[3]=Integer.valueOf(player4);
-						players[4]=Integer.valueOf(player5);
-						players[5]=Integer.valueOf(player6);
-						players[6]=Integer.valueOf(player7);
-						players[7]=Integer.valueOf(player8);
-						
-				
+					JSONObject c = products.getJSONObject(0);
+
+					// Storing each json item in variable
+					player1 = c.getString("player1");
+					player2 = c.getString("player2");
+					String player3 = c.getString("player3");
+					String player4 = c.getString("player4");
+					String player5 = c.getString("player5");
+					String player6 = c.getString("player6");
+					String player7 = c.getString("player7");
+					String player8 = c.getString("player8");
+					players[0]=Integer.valueOf(player1);
+					players[1]=Integer.valueOf(player2);
+					players[2]=Integer.valueOf(player3);
+					players[3]=Integer.valueOf(player4);
+					players[4]=Integer.valueOf(player5);
+					players[5]=Integer.valueOf(player6);
+					players[6]=Integer.valueOf(player7);
+					players[7]=Integer.valueOf(player8);
+
+
 					// Starting new intent
-				
-				
+
+
 					myplayer= pickRandomPlayer(players);
 				}
-				 else {
+				else {
 					// failed to update product
 				}
 			} catch (JSONException e) {
@@ -313,7 +347,7 @@ public class FindActivity extends ListActivity {
 			int[] randoms;
 			left = 0;
 			playersLeft = new int[8];
-			
+
 			for(int i = 1; i<=8; i++){
 				playersLeft[i-1]=i;
 			}
@@ -324,7 +358,7 @@ public class FindActivity extends ListActivity {
 						left++;
 					}
 				}
-				
+
 			}
 			randoms = new int[8-left];
 			int count = 0;
@@ -337,11 +371,11 @@ public class FindActivity extends ListActivity {
 			Random random = new Random();
 
 			return  ""+randoms[random.nextInt(randoms.length)];
-			
-			
-			
-			
-		
+
+
+
+
+
 		}
 		/**
 		 * After completing background task Dismiss the progress dialog
@@ -349,8 +383,8 @@ public class FindActivity extends ListActivity {
 		protected void onPostExecute(String file_url) {
 			// dismiss the dialog after getting all products
 			pDialog.dismiss();
-			
-	new JoiningGame().execute();
+
+			new JoiningGame().execute();
 
 		}
 
@@ -396,7 +430,7 @@ public class FindActivity extends ListActivity {
 
 					// closing this screen
 				} else {
-					
+
 					// failed to create product
 				}
 			} catch (JSONException e) {
@@ -406,8 +440,8 @@ public class FindActivity extends ListActivity {
 			return null;
 		}
 
-	
-		
+
+
 
 		/**
 		 * After completing background task Dismiss the progress dialog
@@ -416,7 +450,7 @@ public class FindActivity extends ListActivity {
 			// dismiss the dialog after getting all products
 			pDialog.dismiss();
 			// updating UI from Background Thread
-	
+
 			Intent in = new Intent(getApplicationContext(),
 					JoinActivity.class);
 			// sending pid to next activity
