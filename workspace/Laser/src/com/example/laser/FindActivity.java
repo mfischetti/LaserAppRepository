@@ -154,7 +154,7 @@ public class FindActivity extends ListActivity {
 		
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				params.add(new BasicNameValuePair("game_id", pickedpid));
-				params.add(new BasicNameValuePair("current_players", currentplayers));
+				params.add(new BasicNameValuePair("current_players", ""+(Integer.valueOf(currentplayers)+1)));
 				
 				// getting JSON string from URL
 				JSONObject json = jParser.makeHttpRequest(url_update_game, "POST", params);
