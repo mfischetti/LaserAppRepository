@@ -37,18 +37,20 @@ public class JoinActivity extends Activity {
 	private ProgressDialog pDialog;
 
 	// JSON parser class
+	JSONParser jParser = new JSONParser();
 	JSONParser jsonParser = new JSONParser();
+	JSONArray products = null;
+
 
 	// single product url
-	private static String url_product_detials = "http://128.4.220.7/laserDatabase/android_connect/get_game_info.php";
-
-
+	private static String url_get_gameinfo = "http://128.4.201.0/laserDatabase/android_connect/get_game_info.php";
 	// url to update product
-	private static final String url_update_player = "http://128.4.220.7/laserDatabase/android_connect/add_player.php";
+	private static final String url_update_player = "http://128.4.201.0/laserDatabase/android_connect/add_player.php";
 
 	// url to delete product
 
 	// JSON Node names
+	private static final String TAG_GAME_INFO = "game_info";
 	private static final String TAG_SUCCESS = "success";
 	private static final String TAG_GAMES = "gameinfo";
 	private static final String TAG_PID = "game_id";
@@ -61,6 +63,9 @@ public class JoinActivity extends Activity {
 	private static final String TAG_PLAYER6 = "player6";
 	private static final String TAG_PLAYER7 = "player7";
 	private static final String TAG_PLAYER8 = "player8";
+	private static String Allplayers = "";
+	boolean temp = true;
+
 
 
 
@@ -73,11 +78,16 @@ public class JoinActivity extends Activity {
 		pid = bundle.getString("gamepid");
 		currentPlayers = bundle.getString("current_players");
 		String player1 = bundle.getString("player1");
-    	
-		TextView players = (TextView)findViewById(R.id.playerslist);
-    	players.setTextColor(Color.RED);
-    	players.setText(player1);
 
+		TextView players = (TextView)findViewById(R.id.playerslist);
+		players.setTextColor(Color.RED);
+		players.setText(Allplayers);
+		while(true){
+			if(temp == true){
+				temp = false;
+				new LoadPlayers().execute();
+			}
+		}
 		// Getting complete product details in background thread
 		//new UpdateGameInfo().execute();
 		//new LoadPlayers().execute();
@@ -95,11 +105,13 @@ public class JoinActivity extends Activity {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
+			/*
 			pDialog = new ProgressDialog(JoinActivity.this);
 			pDialog.setMessage("Loading Game Lobby. Please wait...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
+			 */
 		}
 
 		/**
@@ -108,53 +120,56 @@ public class JoinActivity extends Activity {
 		protected String doInBackground(String... params) {
 
 			// updating UI from Background Thread
-			runOnUiThread(new Runnable() {
-				public void run() {
-					// Check for success tag
-					int success;
-					try {
-						// Building Parameters
-						List<NameValuePair> params = new ArrayList<NameValuePair>();
-						params.add(new BasicNameValuePair("game_id", pid));
+			
+			List<NameValuePair> params1 = new ArrayList<NameValuePair>();
+			params1.add(new BasicNameValuePair("game_id", pid));
 
-						// getting product details by making HTTP request
-						// Note that product details url will use GET request
-						JSONObject json = jsonParser.makeHttpRequest(
-								url_product_detials, "GET", params);
-
-						// check your log for json response
-						Log.d("Single Product Details", json.toString());
-
-						// json success tag
-						success = json.getInt(TAG_SUCCESS);
-						if (success == 1) {
-							// successfully received product details
-							JSONArray productObj = json
-									.getJSONArray(TAG_GAMES); // JSON Array
-
-							// get first product object from JSON Array
-							JSONObject product = productObj.getJSONObject(0);
-
-							// product with this pid found
-							// Edit Text
-							playerslist = (TextView) findViewById(R.id.playerslist);
+			// getting JSON string from URL
+			JSONObject json = jParser.makeHttpRequest(url_get_gameinfo, "GET", params1);
 
 
-							// display product data in EditText
-							playerslist.setText(product.getString(TAG_PLAYER1)+product.getString(TAG_PLAYER2));
+			// Check your log cat for JSON reponse
+			Log.d("All Products: ", json.toString());
+
+			try {
+				// Checking for SUCCESS TAG
+				int success = json.getInt(TAG_SUCCESS);
+
+				if (success == 1) {
+					// products found
+					// Getting Array of Products
+					products = json.getJSONArray(TAG_GAME_INFO);
+
+					// looping through All Products
+
+					JSONObject c = products.getJSONObject(0);
+
+					// Storing each json item in variable
+					Allplayers = c.getString("player1");
+					Allplayers = Allplayers + "\n" + c.getString("player2");
+					Allplayers = Allplayers + "\n" + c.getString("player3");
+					Allplayers = Allplayers + "\n" + c.getString("player4");
+					Allplayers = Allplayers + "\n" + c.getString("player5");
+					Allplayers = Allplayers + "\n" + c.getString("player6");
+					Allplayers = Allplayers + "\n" + c.getString("player7");
+					Allplayers = Allplayers + "\n" + c.getString("player8");
 
 
-						}else{
-							// product with pid not found
-						}
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
+
+					// Starting new intent
+
+
 				}
-			});
+				else {
+					// failed to update product
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 
 			return null;
 		}
+
 
 
 		/**
@@ -162,7 +177,8 @@ public class JoinActivity extends Activity {
 		 * **/
 		protected void onPostExecute(String file_url) {
 			// dismiss the dialog once got all details
-			pDialog.dismiss();
+			//pDialog.dismiss();
+			temp = true;
 		}
 	}
 
@@ -214,7 +230,7 @@ public class JoinActivity extends Activity {
 				} else {
 					// failed to update product
 				}
-				*/
+				 */
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
