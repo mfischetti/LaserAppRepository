@@ -1,7 +1,19 @@
 package com.example.laser;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -9,12 +21,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.laser.FindActivity.JoiningGame;
+import com.example.laser.HostActivity.CreateGameInfo;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -43,7 +59,7 @@ public class JoinActivity extends Activity {
 
 
 	// single product url
-	private static String url_get_gameinfo = "http://128.4.201.0/laserDatabase/android_connect/get_game_info.php";
+	private static String url_get_gameinfo = "http://10.0.0.16/laserDatabase/android_connect/get_game_info.php";
 	// url to update product
 	private static final String url_update_player = "http://128.4.201.0/laserDatabase/android_connect/add_player.php";
 
@@ -65,6 +81,7 @@ public class JoinActivity extends Activity {
 	private static final String TAG_PLAYER8 = "player8";
 	private static String Allplayers = "";
 	boolean temp = true;
+	TextView players;
 
 
 
@@ -79,24 +96,49 @@ public class JoinActivity extends Activity {
 		currentPlayers = bundle.getString("current_players");
 		String player1 = bundle.getString("player1");
 
-		TextView players = (TextView)findViewById(R.id.playerslist);
+		players = (TextView)findViewById(R.id.playerslist);
 		players.setTextColor(Color.RED);
-		players.setText(Allplayers);
-		while(true){
-			if(temp == true){
-				temp = false;
-				new LoadPlayers().execute();
-			}
-		}
+		//players.setText(Allplayers);
+		//new LoadPlayers().execute();
+
+
+
+		callAsynchronousTask();
 		// Getting complete product details in background thread
 		//new UpdateGameInfo().execute();
 		//new LoadPlayers().execute();
 
 	}
 
+
+
+	public void callAsynchronousTask() {
+		final Handler handler = new Handler();
+		Timer timer = new Timer();
+		TimerTask doAsynchronousTask = new TimerTask() {       
+			@Override
+			public void run() {
+				handler.post(new Runnable() {
+					public void run() {       
+						try {
+							LoadPlayers performBackgroundTask = new LoadPlayers();
+							// PerformBackgroundTask this class is the class that extends AsynchTask 
+							performBackgroundTask.execute();
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+						}
+					}
+				});
+			}
+		};
+		timer.schedule(doAsynchronousTask, 0, 1000); //execute in every 1000 ms
+	}
+
+
 	/**
 	 * Background Async Task to Get complete product details
 	 * */
+
 	class LoadPlayers extends AsyncTask<String, String, String> {
 
 		/**
@@ -106,26 +148,26 @@ public class JoinActivity extends Activity {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			/*
-			pDialog = new ProgressDialog(JoinActivity.this);
-			pDialog.setMessage("Loading Game Lobby. Please wait...");
-			pDialog.setIndeterminate(false);
-			pDialog.setCancelable(true);
-			pDialog.show();
+		pDialog = new ProgressDialog(JoinActivity.this);
+		pDialog.setMessage("Loading. Please wait...");
+		pDialog.setIndeterminate(false);
+		pDialog.setCancelable(false);
+		pDialog.show();
 			 */
 		}
 
 		/**
-		 * Getting product details in background thread
+		 * getting All products from url
 		 * */
-		protected String doInBackground(String... params) {
+		protected String doInBackground(String... args) {
 
-			// updating UI from Background Thread
-			
-			List<NameValuePair> params1 = new ArrayList<NameValuePair>();
-			params1.add(new BasicNameValuePair("game_id", pid));
+
+			// Building Parameters
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("game_id", pid));
 
 			// getting JSON string from URL
-			JSONObject json = jParser.makeHttpRequest(url_get_gameinfo, "GET", params1);
+			JSONObject json = jParser.makeHttpRequest(url_get_gameinfo, "GET", params);
 
 
 			// Check your log cat for JSON reponse
@@ -139,6 +181,7 @@ public class JoinActivity extends Activity {
 					// products found
 					// Getting Array of Products
 					products = json.getJSONArray(TAG_GAME_INFO);
+
 
 					// looping through All Products
 
@@ -154,10 +197,7 @@ public class JoinActivity extends Activity {
 					Allplayers = Allplayers + "\n" + c.getString("player7");
 					Allplayers = Allplayers + "\n" + c.getString("player8");
 
-
-
 					// Starting new intent
-
 
 				}
 				else {
@@ -166,20 +206,51 @@ public class JoinActivity extends Activity {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
+			publishProgress(args);
 
 			return null;
 		}
+		/*
+		private String getName(String num) throws IOException {
+			String name = "";
+			if (num == "0"){
+				return "0";
+			}
+			else{
+				File file = new File("names.txt");
+				BufferedReader reader = new BufferedReader( new FileReader (file));
+				String line = "";           
+				while ((line = reader.readLine()) != null) {
+					for (int i = 0; i<line.length()-1; i++){
+						if (line.charAt(i) == num.charAt(0)){
+							int j=i+2;
+							while(j< line.length()-1){
+								name = name + line.charAt(j);
+								j++;
+							}
 
+						}
 
+					}
+				}
+				return name;
+			}
+		}
+		*/
+
+		protected void onProgressUpdate(String... values) {
+			players.setText(Allplayers);
+		}
 
 		/**
 		 * After completing background task Dismiss the progress dialog
 		 * **/
 		protected void onPostExecute(String file_url) {
-			// dismiss the dialog once got all details
+			// dismiss the dialog after getting all products
 			//pDialog.dismiss();
-			temp = true;
+
 		}
+
 	}
 
 	/**

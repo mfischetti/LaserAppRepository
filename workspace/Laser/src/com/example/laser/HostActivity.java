@@ -44,9 +44,9 @@ public class HostActivity extends Activity implements OnClickListener {
 
 	JSONParser jsonParser = new JSONParser();
 
-	private static String url_create_product = "http://128.4.201.0/laserDatabase/android_connect/create_product.php";
-	private static String url_all_products = "http://128.4.201.0/laserDatabase/android_connect/get_all_products.php";
-	private static String url_post_gameinfo = "http://128.4.201.0/laserDatabase/android_connect/create_game_info.php";
+	private static String url_create_product = "http://10.0.0.16/laserDatabase/android_connect/create_product.php";
+	private static String url_all_products = "http://10.0.0.16/laserDatabase/android_connect/get_all_products.php";
+	private static String url_post_gameinfo = "http://10.0.0.16/laserDatabase/android_connect/create_game_info.php";
 
 	//10.0.0.16
 	//udel - 128.4.202.239

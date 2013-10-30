@@ -37,11 +37,11 @@ public class FindActivity extends ListActivity {
 	ArrayList<HashMap<String, String>> productsList;
 
 	// url to get all products list
-	private static String url_all_products = "http://128.4.201.0/laserDatabase/android_connect/get_all_products.php";
-	private static String url_get_gameinfo = "http://128.4.201.0/laserDatabase/android_connect/get_game_info.php";
-	private static String url_update_gameinfo = "http://128.4.201.0/laserDatabase/android_connect/update_game_info.php";
-	private static String url_get_game = "http://128.4.201.0/laserDatabase/android_connect/get_game.php";
-	private static String url_update_game =  "http://128.4.201.0/laserDatabase/android_connect/update_game.php";
+	private static String url_all_products = "http://10.0.0.16/laserDatabase/android_connect/get_all_products.php";
+	private static String url_get_gameinfo = "http://10.0.0.16/laserDatabase/android_connect/get_game_info.php";
+	private static String url_update_gameinfo = "http://10.0.0.16/laserDatabase/android_connect/update_game_info.php";
+	private static String url_get_game = "http://10.0.0.16/laserDatabase/android_connect/get_game.php";
+	private static String url_update_game =  "http://10.0.0.16/laserDatabase/android_connect/update_game.php";
 	//192.168.1.15
 	//udel 128.4.201.0
 	// JSON Node names
