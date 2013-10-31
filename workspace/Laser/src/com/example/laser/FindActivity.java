@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -12,11 +14,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.laser.JoinActivity.LoadPlayers;
+
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -37,11 +42,11 @@ public class FindActivity extends ListActivity {
 	ArrayList<HashMap<String, String>> productsList;
 
 	// url to get all products list
-	private static String url_all_products = "http://10.0.0.16/laserDatabase/android_connect/get_all_products.php";
-	private static String url_get_gameinfo = "http://10.0.0.16/laserDatabase/android_connect/get_game_info.php";
-	private static String url_update_gameinfo = "http://10.0.0.16/laserDatabase/android_connect/update_game_info.php";
-	private static String url_get_game = "http://10.0.0.16/laserDatabase/android_connect/get_game.php";
-	private static String url_update_game =  "http://10.0.0.16/laserDatabase/android_connect/update_game.php";
+	private static String url_all_products = "http://128.4.200.213/laserDatabase/android_connect/get_all_products.php";
+	private static String url_get_gameinfo = "http://128.4.200.213/laserDatabase/android_connect/get_game_info.php";
+	private static String url_update_gameinfo = "http://128.4.200.213/laserDatabase/android_connect/update_game_info.php";
+	private static String url_get_game = "http://128.4.200.213/laserDatabase/android_connect/get_game.php";
+	private static String url_update_game =  "http://128.4.200.213/laserDatabase/android_connect/update_game.php";
 	//192.168.1.15
 	//udel 128.4.201.0
 	// JSON Node names
@@ -75,8 +80,7 @@ public class FindActivity extends ListActivity {
 		productsList = new ArrayList<HashMap<String, String>>();
 
 		// Loading products in Background Thread
-		new LoadAllProducts().execute();
-
+		callAsynchronousTask();
 		// Get listview
 		ListView lv = getListView();
 
@@ -199,7 +203,27 @@ public class FindActivity extends ListActivity {
 	}
 
 
-
+	public void callAsynchronousTask() {
+		final Handler handler = new Handler();
+		Timer timer = new Timer();
+		TimerTask doAsynchronousTask = new TimerTask() {       
+			@Override
+			public void run() {
+				handler.post(new Runnable() {
+					public void run() {       
+						try {
+							LoadAllProducts performBackgroundTask = new LoadAllProducts();
+							// PerformBackgroundTask this class is the class that extends AsynchTask 
+							performBackgroundTask.execute();
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+						}
+					}
+				});
+			}
+		};
+		timer.schedule(doAsynchronousTask, 0, 1000); //execute in every 1000 ms
+	}
 
 
 	/**
@@ -213,11 +237,13 @@ public class FindActivity extends ListActivity {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
+			/*
 			pDialog = new ProgressDialog(FindActivity.this);
 			pDialog.setMessage("Loading Games. Please wait...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(false);
 			pDialog.show();
+			*/
 		}
 
 		/**
@@ -240,6 +266,7 @@ public class FindActivity extends ListActivity {
 					// products found
 					// Getting Array of Products
 					products = json.getJSONArray(TAG_GAMES);
+					productsList.clear();
 
 					// looping through All Products
 					for (int i = 0; i < products.length(); i++) {
@@ -287,7 +314,7 @@ public class FindActivity extends ListActivity {
 		 * **/
 		protected void onPostExecute(String file_url) {
 			// dismiss the dialog after getting all products
-			pDialog.dismiss();
+			//pDialog.dismiss();
 			// updating UI from Background Thread
 			runOnUiThread(new Runnable() {
 				public void run() {

@@ -59,9 +59,9 @@ public class JoinActivity extends Activity {
 
 
 	// single product url
-	private static String url_get_gameinfo = "http://10.0.0.16/laserDatabase/android_connect/get_game_info.php";
+	private static String url_get_gameinfo = "http://128.4.200.213/laserDatabase/android_connect/get_game_info.php";
 	// url to update product
-	private static final String url_update_player = "http://128.4.201.0/laserDatabase/android_connect/add_player.php";
+	private static final String url_update_player = "http://128.4.200.213/laserDatabase/android_connect/add_player.php";
 
 	// url to delete product
 
@@ -188,14 +188,14 @@ public class JoinActivity extends Activity {
 					JSONObject c = products.getJSONObject(0);
 
 					// Storing each json item in variable
-					Allplayers = c.getString("player1");
-					Allplayers = Allplayers + "\n" + c.getString("player2");
-					Allplayers = Allplayers + "\n" + c.getString("player3");
-					Allplayers = Allplayers + "\n" + c.getString("player4");
-					Allplayers = Allplayers + "\n" + c.getString("player5");
-					Allplayers = Allplayers + "\n" + c.getString("player6");
-					Allplayers = Allplayers + "\n" + c.getString("player7");
-					Allplayers = Allplayers + "\n" + c.getString("player8");
+					Allplayers = getName(c.getString("player1"));
+					Allplayers = Allplayers + "\n" + getName(c.getString("player2"));
+					Allplayers = Allplayers + "\n" + getName(c.getString("player3"));
+					Allplayers = Allplayers + "\n" + getName(c.getString("player4"));
+					Allplayers = Allplayers + "\n" + getName(c.getString("player5"));
+					Allplayers = Allplayers + "\n" + getName(c.getString("player6"));
+					Allplayers = Allplayers + "\n" + getName(c.getString("player7"));
+					Allplayers = Allplayers + "\n" + getName(c.getString("player8"));
 
 					// Starting new intent
 
@@ -210,33 +210,37 @@ public class JoinActivity extends Activity {
 
 			return null;
 		}
-		/*
-		private String getName(String num) throws IOException {
-			String name = "";
-			if (num == "0"){
-				return "0";
+
+
+		private String getName(String number) {
+			if (number.charAt(0)=='1'){
+				return "Matt";
+			}
+			if (number.charAt(0)=='2'){
+				return "Mike";
+			}
+			if (number.charAt(0)=='3'){
+				return "Alyssa";
+			}
+			if (number.charAt(0)=='4'){
+				return "Theo";
+			}
+			if (number.charAt(0)=='5'){
+				return "Angelo";
+			}
+			if (number.charAt(0)=='6'){
+				return "Eric";
+			}
+			if (number.charAt(0)=='7'){
+				return "DaveRamos";
+			}
+			if (number.charAt(0)=='8'){
+				return "Jimmer";
 			}
 			else{
-				File file = new File("names.txt");
-				BufferedReader reader = new BufferedReader( new FileReader (file));
-				String line = "";           
-				while ((line = reader.readLine()) != null) {
-					for (int i = 0; i<line.length()-1; i++){
-						if (line.charAt(i) == num.charAt(0)){
-							int j=i+2;
-							while(j< line.length()-1){
-								name = name + line.charAt(j);
-								j++;
-							}
-
-						}
-
-					}
-				}
-				return name;
+				return "";
 			}
 		}
-		*/
 
 		protected void onProgressUpdate(String... values) {
 			players.setText(Allplayers);
