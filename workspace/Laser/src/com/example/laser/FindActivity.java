@@ -32,7 +32,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 public class FindActivity extends ListActivity {
-
+	Player player;
 	// Progress Dialog
 	private ProgressDialog pDialog;
 
@@ -42,11 +42,11 @@ public class FindActivity extends ListActivity {
 	ArrayList<HashMap<String, String>> productsList;
 
 	// url to get all products list
-	private static String url_all_products = "http://128.4.200.213/laserDatabase/android_connect/get_all_products.php";
-	private static String url_get_gameinfo = "http://128.4.200.213/laserDatabase/android_connect/get_game_info.php";
-	private static String url_update_gameinfo = "http://128.4.200.213/laserDatabase/android_connect/update_game_info.php";
-	private static String url_get_game = "http://128.4.200.213/laserDatabase/android_connect/get_game.php";
-	private static String url_update_game =  "http://128.4.200.213/laserDatabase/android_connect/update_game.php";
+	private static String url_all_products = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/get_all_products.php";
+	private static String url_get_gameinfo = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/get_game_info.php";
+	private static String url_update_gameinfo = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/update_game_info.php";
+	private static String url_get_game = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/get_game.php";
+	private static String url_update_game =  "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/update_game.php";
 	//192.168.1.15
 	//udel 128.4.201.0
 	// JSON Node names
@@ -67,6 +67,7 @@ public class FindActivity extends ListActivity {
 	String player2;
 	Boolean ContinueOn = true;//false;
 	int left;
+	String GameMode = "";
 
 	// products JSONArray
 	JSONArray products = null;
@@ -107,7 +108,7 @@ public class FindActivity extends ListActivity {
 
 				// getting JSON string from URL
 				JSONObject json = jParser.makeHttpRequest(url_get_game, "GET", params);
-				
+
 
 				// Check your log cat for JSON reponse
 				Log.d("All Products: ", json.toString());
@@ -129,6 +130,7 @@ public class FindActivity extends ListActivity {
 						// Storing each json item in variable
 						currentplayers = c.getString("current_players");
 						MaxPlayers = c.getString("max_players");
+						GameMode = c.getString("game_mode");
 
 
 
@@ -155,14 +157,14 @@ public class FindActivity extends ListActivity {
 			}
 
 			private void UpdateCurrentPlayers() {
-		
+
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				params.add(new BasicNameValuePair("game_id", pickedpid));
 				params.add(new BasicNameValuePair("current_players", ""+(Integer.valueOf(currentplayers)+1)));
-				
+
 				// getting JSON string from URL
 				JSONObject json = jParser.makeHttpRequest(url_update_game, "POST", params);
-				
+
 
 				// Check your log cat for JSON reponse
 				Log.d("All Products: ", json.toString());
@@ -181,7 +183,7 @@ public class FindActivity extends ListActivity {
 
 						JSONObject c = products.getJSONObject(0);
 
-			
+
 
 
 
@@ -195,10 +197,10 @@ public class FindActivity extends ListActivity {
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				
+
 			}
 		});
-	
+
 
 	}
 
@@ -243,7 +245,7 @@ public class FindActivity extends ListActivity {
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(false);
 			pDialog.show();
-			*/
+			 */
 		}
 
 		/**
@@ -390,6 +392,7 @@ public class FindActivity extends ListActivity {
 					String player6 = c.getString("player6");
 					String player7 = c.getString("player7");
 					String player8 = c.getString("player8");
+
 					players[0]=Integer.valueOf(player1);
 					players[1]=Integer.valueOf(player2);
 					players[2]=Integer.valueOf(player3);
@@ -404,6 +407,35 @@ public class FindActivity extends ListActivity {
 
 
 					myplayer= pickRandomPlayer(players);
+					player = new Player(Integer.valueOf(myplayer),Integer.valueOf(pickedpid));
+					
+					
+					if (GameMode.charAt(0) == 'T'){ //find out what team to be added too
+						int blue = 0;
+						int red = 0;
+						String[] redteam = new String[3];
+						String[] blueteam = new String[3];
+						for (int i=1; i<9;i++){
+							String temp = "player"+i+"Team";
+							if(c.getString(temp).charAt(0) == 'R'){
+								redteam[red] = "player" + i; //what players are on the red team
+								red++;
+							}
+							if(c.getString(temp).charAt(0) == 'B'){
+								blueteam[blue] = "player" + i; // what players are on the blue team
+								blue++;
+							}
+						}
+						if(blue < red){
+							player.setTeam("Blue");
+						}
+						else{
+							player.setTeam("Red");
+						}
+					}
+					else{
+						player.setTeam("Neutral");
+					}
 				}
 				else {
 					// failed to update product
@@ -485,6 +517,7 @@ public class FindActivity extends ListActivity {
 			params2.add(new BasicNameValuePair("game_id", pickedpid));
 			params2.add(new BasicNameValuePair("player", myplayer));
 			params2.add(new BasicNameValuePair("left",""+left));
+			params2.add(new BasicNameValuePair("playerTeam",player.getTeam())); //add player to red or blue
 
 			JSONObject json = jsonParser.makeHttpRequest(url_update_gameinfo,
 					"POST", params2);
@@ -529,6 +562,7 @@ public class FindActivity extends ListActivity {
 			in.putExtra("gamepid", pickedpid);
 			in.putExtra("current_players", currentplayers);
 			in.putExtra("player1", ""+left);
+			in.putExtra("gamemode", GameMode);
 
 
 			// starting new activity and expecting some response back

@@ -59,10 +59,10 @@ public class JoinActivity extends Activity {
 
 
 	// single product url
-	private static String url_get_gameinfo = "http://128.4.200.213/laserDatabase/android_connect/get_game_info.php";
+	private static String url_get_gameinfo = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/get_game_info.php";
 	// url to update product
-	private static final String url_update_player = "http://128.4.200.213/laserDatabase/android_connect/add_player.php";
-
+	private static final String url_update_player = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/add_player.php";
+	//10.0.0.16
 	// url to delete product
 
 	// JSON Node names
@@ -71,17 +71,44 @@ public class JoinActivity extends Activity {
 	private static final String TAG_GAMES = "gameinfo";
 	private static final String TAG_PID = "game_id";
 	private static final String TAG_CURRENT_PLAYERS = "current_players";
-	private static final String TAG_PLAYER1 = "player1";
-	private static final String TAG_PLAYER2 = "player2";
-	private static final String TAG_PLAYER3 = "player3";
-	private static final String TAG_PLAYER4 = "player4";
-	private static final String TAG_PLAYER5 = "player5";
-	private static final String TAG_PLAYER6 = "player6";
-	private static final String TAG_PLAYER7 = "player7";
-	private static final String TAG_PLAYER8 = "player8";
-	private static String Allplayers = "";
+	private static String play1 = "";
+	private static String play2 = "";
+	private static String play3 = "";
+	private static String play4 = "";
+	private static String play5 = "";
+	private static String play6 = "";
+	private static String play7 = "";
+	private static String play8 = "";
+	private static String color1 = "";
+	private static String color2 = "";
+	private static String color3 = "";
+	private static String color4 = "";
+	private static String color5 = "";
+	private static String color6 = "";
+	private static String color7 = "";
+	private static String color8 = "";
+	
+
 	boolean temp = true;
-	TextView players;
+	TextView JoinTitle;
+	TextView player1;
+	TextView player2;
+	TextView player3;
+	TextView player4;
+	TextView player5;
+	TextView player6;
+	TextView player7;
+	TextView player8;
+	TextView team11;
+	TextView team12;
+	TextView team13;
+	TextView team14;
+	TextView team21;
+	TextView team22;
+	TextView team23;
+	TextView team24;
+
+	String GameMode = "";
 
 
 
@@ -94,10 +121,44 @@ public class JoinActivity extends Activity {
 		Bundle bundle = getIntent().getExtras();
 		pid = bundle.getString("gamepid");
 		currentPlayers = bundle.getString("current_players");
-		String player1 = bundle.getString("player1");
+		String player = bundle.getString("player1");
+		GameMode = bundle.getString("gamemode");
+		JoinTitle = (TextView)findViewById(R.id.JoinTitle);
+		JoinTitle.setText(GameMode);
+		JoinTitle.setTextColor(Color.RED);
+		player1 = (TextView)findViewById(R.id.TextView001);
+		player1.setTextColor(Color.RED);
+		player2 = (TextView)findViewById(R.id.TextView002);
+		player2.setTextColor(Color.BLUE);
+		player3 = (TextView)findViewById(R.id.TextView003);
+		player3.setTextColor(Color.WHITE);
+		player4 = (TextView)findViewById(R.id.TextView004);
+		player4.setTextColor(Color.GREEN);
+		player5 = (TextView)findViewById(R.id.TextView005);
+		player5.setTextColor(Color.YELLOW);
+		player6 = (TextView)findViewById(R.id.TextView006);
+		player6.setTextColor(Color.MAGENTA);
+		player7 = (TextView)findViewById(R.id.TextView007);
+		player7.setTextColor(Color.CYAN);
+		player8 = (TextView)findViewById(R.id.TextView008);
+		player8.setTextColor(Color.GRAY);
 
-		players = (TextView)findViewById(R.id.playerslist);
-		players.setTextColor(Color.RED);
+		team11 = (TextView)findViewById(R.id.team11);
+		team11.setTextColor(Color.BLUE);
+		team12 = (TextView)findViewById(R.id.team12);
+		team12.setTextColor(Color.BLUE);
+		team13 = (TextView)findViewById(R.id.team13);
+		team13.setTextColor(Color.BLUE);
+		team14 = (TextView)findViewById(R.id.team14);
+		team14.setTextColor(Color.BLUE);
+		team21 = (TextView)findViewById(R.id.team21);
+		team21.setTextColor(Color.RED);
+		team22 = (TextView)findViewById(R.id.team22);
+		team22.setTextColor(Color.RED);
+		team23 = (TextView)findViewById(R.id.team23);
+		team23.setTextColor(Color.RED);
+		team24 = (TextView)findViewById(R.id.team24);
+		team24.setTextColor(Color.RED);
 		//players.setText(Allplayers);
 		//new LoadPlayers().execute();
 
@@ -188,14 +249,22 @@ public class JoinActivity extends Activity {
 					JSONObject c = products.getJSONObject(0);
 
 					// Storing each json item in variable
-					Allplayers = getName(c.getString("player1"));
-					Allplayers = Allplayers + "\n" + getName(c.getString("player2"));
-					Allplayers = Allplayers + "\n" + getName(c.getString("player3"));
-					Allplayers = Allplayers + "\n" + getName(c.getString("player4"));
-					Allplayers = Allplayers + "\n" + getName(c.getString("player5"));
-					Allplayers = Allplayers + "\n" + getName(c.getString("player6"));
-					Allplayers = Allplayers + "\n" + getName(c.getString("player7"));
-					Allplayers = Allplayers + "\n" + getName(c.getString("player8"));
+					play1 = getName(c.getString("player1"));
+					play2 = getName(c.getString("player2"));
+					play3 = getName(c.getString("player3"));
+					play4 = getName(c.getString("player4"));
+					play5 = getName(c.getString("player5"));
+					play6 = getName(c.getString("player6"));
+					play7 = getName(c.getString("player7"));
+					play8 = getName(c.getString("player8"));
+					color1 = c.getString("player1Team");
+					color2 = c.getString("player2Team");
+					color3 = c.getString("player3Team");
+					color4 = c.getString("player4Team");
+					color5 = c.getString("player5Team");
+					color6 = c.getString("player6Team");
+					color7 = c.getString("player7Team");
+					color8 = c.getString("player8Team");
 
 					// Starting new intent
 
@@ -243,7 +312,19 @@ public class JoinActivity extends Activity {
 		}
 
 		protected void onProgressUpdate(String... values) {
-			players.setText(Allplayers);
+			if (GameMode.charAt(0) == 'F'){
+				player1.setText(play1);
+				player2.setText(play2);
+				player3.setText(play3);
+				player4.setText(play4);
+				player5.setText(play5);
+				player6.setText(play6);
+				player7.setText(play7);
+				player8.setText(play8);
+			}
+			if (GameMode.charAt(0) == 'T'){
+				team11.setText(play1);
+			}
 		}
 
 		/**
