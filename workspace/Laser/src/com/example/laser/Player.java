@@ -3,10 +3,12 @@ package com.example.laser;
 import java.io.Serializable;
 import java.util.Hashtable;
 
+@SuppressWarnings("serial")
 public class Player implements Serializable {
 	String playerName;
 	int playerID;
 	int gameID;
+	String playerposition;
 	int xLoc;
 	int yLoc;
 	int shotsFired;
@@ -21,6 +23,7 @@ public class Player implements Serializable {
 		this.gameID = gameID;
 		this.shotsFired = 0;
 		this.hit = 0;
+		this.playerposition = "";
 		
 		playerHit = new Hashtable<Integer, Integer>();
 		hitByPlayer = new Hashtable<Integer, Integer>();
@@ -57,11 +60,21 @@ public class Player implements Serializable {
 			//update mysql db by calling php with async function
 		}
 	}
+	public void setPlayerNum(String num){
+		this.playerposition = num;
+	}
 	public void setTeam(String team){
 		this.team = team;
 	}
 	public String getTeam(){
 		return team;
+	}
+	public String getPlayerNum(){
+		return playerposition;
+	}
+	
+	public int getPlayerID(){
+		return playerID;
 	}
 	
 	

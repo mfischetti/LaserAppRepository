@@ -41,13 +41,12 @@ import android.widget.TextView;
 public class HostActivity extends Activity implements OnClickListener {
 
 	private ProgressDialog pDialog;
-
 	JSONParser jsonParser = new JSONParser();
 
 	private static String url_create_product = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/create_product.php";
 	private static String url_all_products = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/get_all_products.php";
 	private static String url_post_gameinfo = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/create_game_info.php";
-
+	Player player;
 	//10.0.0.16
 	//udel - 128.4.202.239
 
@@ -328,7 +327,8 @@ public class HostActivity extends Activity implements OnClickListener {
 		 * getting All products from url
 		 * */
 		protected String doInBackground(String... arg0) {
-			String playernumber = ""+(1 + (Math.random() * 8));
+			int playernumber = (int) (1 + (Math.random() * 8));
+			player = new Player(Integer.parseInt(gamepid), playernumber);
 			String color;
 			if (game_mode.charAt(0) == 'T'){
 				color = pickcolor();
@@ -336,9 +336,10 @@ public class HostActivity extends Activity implements OnClickListener {
 			else{
 				color = "Neutral";
 			}
+			player.setTeam(color);
 			List<NameValuePair> params2 = new ArrayList<NameValuePair>();
 			params2.add(new BasicNameValuePair("game_id", gamepid));
-			params2.add(new BasicNameValuePair("player1", playernumber));
+			params2.add(new BasicNameValuePair("player1", playernumber+""));
 			params2.add(new BasicNameValuePair("playerTeam", color));
 
 			JSONObject json = jsonParser.makeHttpRequest(url_post_gameinfo,
@@ -386,6 +387,7 @@ public class HostActivity extends Activity implements OnClickListener {
 			Intent in = new Intent(getApplicationContext(),
 					JoinActivity.class);
 			// sending pid to next activity
+			in.putExtra("player", player);
 			in.putExtra("gamepid", gamepid);
 			in.putExtra("current_players", current_players);
 			in.putExtra("gamemode",game_mode);

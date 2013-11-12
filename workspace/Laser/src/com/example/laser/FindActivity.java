@@ -59,7 +59,7 @@ public class FindActivity extends ListActivity {
 	private static final String TAG_GAME_MODE = "game_mode";
 	private static final String TAG_GAME_INFO = "game_info";
 
-
+	String Micheal;
 	String currentplayers;
 	String pickedpid;
 	String myplayer;
@@ -408,27 +408,37 @@ public class FindActivity extends ListActivity {
 
 					myplayer= pickRandomPlayer(players);
 					player = new Player(Integer.valueOf(myplayer),Integer.valueOf(pickedpid));
-					
-					
+
 					if (GameMode.charAt(0) == 'T'){ //find out what team to be added too
 						int blue = 0;
 						int red = 0;
-						String[] redteam = new String[3];
-						String[] blueteam = new String[3];
+						//String[] redteam = new String[3];
+						//String[] blueteam = new String[3];
+
 						for (int i=1; i<9;i++){
 							String temp = "player"+i+"Team";
-							if(c.getString(temp).charAt(0) == 'R'){
-								redteam[red] = "player" + i; //what players are on the red team
+							String temp1 = c.getString(temp);
+							if(temp1.contains("Red")){
+								//redteam[red] = "player" + i; //what players are on the red team
 								red++;
 							}
-							if(c.getString(temp).charAt(0) == 'B'){
-								blueteam[blue] = "player" + i; // what players are on the blue team
+							if(temp1.contains("Blue")){
+								//blueteam[blue] = "player" + i; // what players are on the blue team
 								blue++;
+								Micheal = "here";
 							}
 						}
+
+						Micheal = c.getString("player1Team");
 						if(blue < red){
 							player.setTeam("Blue");
 						}
+						// if blue equals red, then pick a random color
+						/*
+						if(blue == red){
+							
+						}
+						*/
 						else{
 							player.setTeam("Red");
 						}
@@ -555,12 +565,14 @@ public class FindActivity extends ListActivity {
 			// dismiss the dialog after getting all products
 			pDialog.dismiss();
 			// updating UI from Background Thread
+			player.setPlayerNum(myplayer.toString());
 
-			Intent in = new Intent(getApplicationContext(),
+			Intent in = new Intent(FindActivity.this,
 					JoinActivity.class);
 			// sending pid to next activity
+			in.putExtra("player", player);
 			in.putExtra("gamepid", pickedpid);
-			in.putExtra("current_players", currentplayers);
+			in.putExtra("current_players", Micheal);
 			in.putExtra("player1", ""+left);
 			in.putExtra("gamemode", GameMode);
 

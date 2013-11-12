@@ -32,6 +32,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -61,9 +62,13 @@ public class JoinActivity extends Activity {
 	// single product url
 	private static String url_get_gameinfo = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/get_game_info.php";
 	// url to update product
-	private static final String url_update_player = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/add_player.php";
+	private static String url_update_game =  "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/update_game.php";
+	private static String url_update_player = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/add_player.php";
+	private static String url_get_game = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/get_game.php";
+
 	//10.0.0.16
 	// url to delete product
+
 
 	// JSON Node names
 	private static final String TAG_GAME_INFO = "game_info";
@@ -87,7 +92,7 @@ public class JoinActivity extends Activity {
 	private static String color6 = "";
 	private static String color7 = "";
 	private static String color8 = "";
-	
+	String tempCurrentPlayers = "";
 
 	boolean temp = true;
 	TextView JoinTitle;
@@ -110,6 +115,11 @@ public class JoinActivity extends Activity {
 
 	String GameMode = "";
 
+	Player player;
+	ArrayList<String> AllColors = new ArrayList<String>();		
+	ArrayList<String> AllPlayers = new ArrayList<String>();
+	ArrayList<String> AllPlayersTemp = new ArrayList<String>();		
+
 
 
 
@@ -119,9 +129,16 @@ public class JoinActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_join);
 		Bundle bundle = getIntent().getExtras();
+
+		// 2. get person object from intent
+		player = (Player) getIntent().getSerializableExtra("player");
+
+
+
+
 		pid = bundle.getString("gamepid");
 		currentPlayers = bundle.getString("current_players");
-		String player = bundle.getString("player1");
+		//String player = bundle.getString("player1");
 		GameMode = bundle.getString("gamemode");
 		JoinTitle = (TextView)findViewById(R.id.JoinTitle);
 		JoinTitle.setText(GameMode);
@@ -159,6 +176,11 @@ public class JoinActivity extends Activity {
 		team23.setTextColor(Color.RED);
 		team24 = (TextView)findViewById(R.id.team24);
 		team24.setTextColor(Color.RED);
+		//this is how you get it so it doesnt crash
+		/*
+		TextView test = (TextView)findViewById(R.id.testView);
+		test.setText(player.getPlayerID()+"");
+		*/
 		//players.setText(Allplayers);
 		//new LoadPlayers().execute();
 
@@ -166,7 +188,6 @@ public class JoinActivity extends Activity {
 
 		callAsynchronousTask();
 		// Getting complete product details in background thread
-		//new UpdateGameInfo().execute();
 		//new LoadPlayers().execute();
 
 	}
@@ -249,22 +270,22 @@ public class JoinActivity extends Activity {
 					JSONObject c = products.getJSONObject(0);
 
 					// Storing each json item in variable
-					play1 = getName(c.getString("player1"));
-					play2 = getName(c.getString("player2"));
-					play3 = getName(c.getString("player3"));
-					play4 = getName(c.getString("player4"));
-					play5 = getName(c.getString("player5"));
-					play6 = getName(c.getString("player6"));
-					play7 = getName(c.getString("player7"));
-					play8 = getName(c.getString("player8"));
-					color1 = c.getString("player1Team");
-					color2 = c.getString("player2Team");
-					color3 = c.getString("player3Team");
-					color4 = c.getString("player4Team");
-					color5 = c.getString("player5Team");
-					color6 = c.getString("player6Team");
-					color7 = c.getString("player7Team");
-					color8 = c.getString("player8Team");
+					AllPlayersTemp.add(getName(c.getString("player1")));
+					AllPlayersTemp.add(getName(c.getString("player2")));
+					AllPlayersTemp.add(getName(c.getString("player3")));
+					AllPlayersTemp.add(getName(c.getString("player4")));
+					AllPlayersTemp.add(getName(c.getString("player5")));
+					AllPlayersTemp.add(getName(c.getString("player6")));
+					AllPlayersTemp.add(getName(c.getString("player7")));
+					AllPlayersTemp.add(getName(c.getString("player8")));
+					AllColors.add(c.getString("player1Team"));
+					AllColors.add(c.getString("player2Team"));
+					AllColors.add(c.getString("player3Team"));
+					AllColors.add(c.getString("player4Team"));
+					AllColors.add(c.getString("player5Team"));
+					AllColors.add(c.getString("player6Team"));
+					AllColors.add(c.getString("player7Team"));
+					AllColors.add(c.getString("player8Team"));
 
 					// Starting new intent
 
@@ -312,20 +333,25 @@ public class JoinActivity extends Activity {
 		}
 
 		protected void onProgressUpdate(String... values) {
-			if (GameMode.charAt(0) == 'F'){
-				player1.setText(play1);
-				player2.setText(play2);
-				player3.setText(play3);
-				player4.setText(play4);
-				player5.setText(play5);
-				player6.setText(play6);
-				player7.setText(play7);
-				player8.setText(play8);
-			}
-			if (GameMode.charAt(0) == 'T'){
-				team11.setText(play1);
+			if(AllPlayers != AllPlayersTemp){
+				AllPlayers = AllPlayersTemp;
+				if (GameMode.charAt(0) == 'F'){
+					player1.setText(AllPlayers.get(0));
+					player2.setText(AllPlayers.get(1));
+					player3.setText(AllPlayers.get(2));
+					player4.setText(AllPlayers.get(3));
+					player5.setText(AllPlayers.get(4));
+					player6.setText(AllPlayers.get(5));
+					player7.setText(AllPlayers.get(6));
+					player8.setText(AllPlayers.get(7));
+				}
+				if (GameMode.charAt(0) == 'T'){
+					setDisplay();
+				}
 			}
 		}
+
+
 
 		/**
 		 * After completing background task Dismiss the progress dialog
@@ -335,74 +361,193 @@ public class JoinActivity extends Activity {
 			//pDialog.dismiss();
 
 		}
-
-	}
-
-	/**
-	 * Background Async Task to  Save product Details
-	 * */
-	class UpdateGameInfo extends AsyncTask<String, String, String> {
-
-		/**
-		 * Before starting background thread Show Progress Dialog
-		 * */
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			pDialog = new ProgressDialog(JoinActivity.this);
-			pDialog.setMessage("Update Info");
-			pDialog.setIndeterminate(false);
-			pDialog.setCancelable(true);
-			pDialog.show();
-		}
-
-		/**
-		 * Saving product
-		 * */
-		protected String doInBackground(String... args) {
-
-			// getting updated data from EditTexts
-
-			// Building Parameters
-			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair(TAG_PID, pid));
-			params.add(new BasicNameValuePair(TAG_CURRENT_PLAYERS, currentPlayers));
-
-			// sending modified data through http request
-			// Notice that update product url accepts POST method
-			JSONObject json = jsonParser.makeHttpRequest(url_update_player,
-					"POST", params);
-
-			// check json success tag
-			try {
-				int success = json.getInt(TAG_SUCCESS);
-				/*
-				if (success == 1) {
-					// successfully updated
-					Intent i = getIntent();
-					// send result code 100 to notify about product update
-					setResult(100, i);
-					finish();
-				} else {
-					// failed to update product
+		private void setDisplay() {
+			int[] red = new int[4];	
+			red[0] = 9; red[1] = 9; red[2] = 9; red[3] = 9;
+			int[] blue = new int[4];
+			blue[0] = 9; blue[1] = 9; blue[2] = 9; blue[3] = 9;
+			int redcounter = 0;
+			int bluecounter = 0;
+			for (int i = 0; i < 8; i++){
+				if(AllColors.get(i).contains("Red")){
+					red[redcounter] = i;
+					redcounter++;
 				}
-				 */
-			} catch (JSONException e) {
-				e.printStackTrace();
+				if(AllColors.get(i).contains("Blue")){
+					blue[bluecounter] = i;
+					bluecounter++;
+				}
+			}
+			//SET BLUE TEAM DISPLAY
+			if (blue[0] != 9){
+				team11.setText(AllPlayers.get(blue[0]));
+			}
+			if (blue[1] != 9){
+				team12.setText(AllPlayers.get(blue[1]));
+			}
+			if (blue[2] != 9){
+				team13.setText(AllPlayers.get(blue[2]));
+			}
+			if (blue[3] != 9){
+				team14.setText(AllPlayers.get(blue[3]));
+
+			}
+			//SET RED TEAM DISPLAY
+			if (red[0] != 9){
+				team21.setText(AllPlayers.get(red[0]));
+			}
+			if (red[1] != 9){
+				team22.setText(AllPlayers.get(red[1]));
+			}
+			if (red[2] != 9){
+				team23.setText(AllPlayers.get(red[2]));
+			}
+			if (red[3] != 9){
+				team24.setText(AllPlayers.get(red[3]));
 			}
 
-			return null;
-		}
-
-
-		/**
-		 * After completing background task Dismiss the progress dialog
-		 * **/
-		protected void onPostExecute(String file_url) {
-			// dismiss the dialog once product uupdated
-			pDialog.dismiss();
 		}
 	}
-
+	//	@Override
+	//	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	//		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+	//			removePlayer();
+	//			/*
+	//			Intent in = new Intent(getApplicationContext(),
+	//					MainActivity.class);
+	//			// starting new activity and expecting some response back
+	//			startActivity(in);	    
+	//			*/}
+	//		return super.onKeyDown(keyCode, event);
+	//	}
+	//	/**
+	//	 * Background Async Task to  Save product Details
+	//	 * */
+	//	private void removePlayer() {	//first get the current players
+	//		String MaxPlayers = null;
+	//		List<NameValuePair> params = new ArrayList<NameValuePair>();
+	//		params.add(new BasicNameValuePair("game_id", pid));
+	//
+	//		// getting JSON string from URL
+	//		JSONObject json = jParser.makeHttpRequest(url_get_game, "GET", params);
+	//
+	//
+	//		// Check your log cat for JSON reponse
+	//		Log.d("All Products: ", json.toString());
+	//
+	//		try {
+	//			// Checking for SUCCESS TAG
+	//			int success = json.getInt(TAG_SUCCESS);
+	//
+	//			if (success == 1) {
+	//				// products found
+	//				// Getting Array of Products
+	//				products = json.getJSONArray(TAG_GAMES);
+	//
+	//
+	//				// looping through All Products
+	//
+	//				JSONObject c = products.getJSONObject(0);
+	//
+	//				// Storing each json item in variable
+	//				tempCurrentPlayers = c.getString("current_players");
+	//
+	//
+	//
+	//				// Starting new intent
+	//
+	//
+	//			}
+	//			else {
+	//				// failed to update product
+	//			}
+	//		} catch (JSONException e) {
+	//			e.printStackTrace();
+	//		}
+	//
+	//		new UpdateGameInfo().execute();
+	//		//Process char
+	//
+	//	}
+	//	class UpdateGameInfo extends AsyncTask<String, String, String> {	//updates current players to current players - 1
+	//
+	//		/**
+	//		 * Before starting background thread Show Progress Dialog
+	//		 * */
+	//		@Override
+	//		protected void onPreExecute() {
+	//			super.onPreExecute();
+	//			pDialog = new ProgressDialog(JoinActivity.this);
+	//			pDialog.setMessage("Leaving Game");
+	//			pDialog.setIndeterminate(false);
+	//			pDialog.setCancelable(true);
+	//			pDialog.show();
+	//		}
+	//
+	//		/**
+	//		 * Saving product
+	//		 * */
+	//		protected String doInBackground(String... args) {
+	//
+	//			// getting updated data from EditTexts
+	//
+	//			// Building Parameters
+	//			
+	//			List<NameValuePair> params = new ArrayList<NameValuePair>();
+	//			params.add(new BasicNameValuePair("game_id", pid));
+	//			params.add(new BasicNameValuePair("current_players", ""+(Integer.valueOf(tempCurrentPlayers)-1)));
+	//
+	//			// getting JSON string from URL
+	//			JSONObject json = jParser.makeHttpRequest(url_update_game, "POST", params);
+	//
+	//
+	//			// Check your log cat for JSON reponse
+	//			Log.d("All Products: ", json.toString());
+	//
+	//			try {
+	//				// Checking for SUCCESS TAG
+	//				int success = json.getInt(TAG_SUCCESS);
+	//
+	//				if (success == 1) {
+	//					// products found
+	//					// Getting Array of Products
+	//					products = json.getJSONArray(TAG_GAMES);
+	//
+	//
+	//					// looping through All Products
+	//
+	//					JSONObject c = products.getJSONObject(0);
+	//
+	//
+	//
+	//
+	//
+	//					// Starting new intent
+	//
+	//
+	//				}
+	//				else {
+	//					// failed to update product
+	//				}
+	//			} catch (JSONException e) {
+	//				e.printStackTrace();
+	//			}
+	//
+	//
+	//
+	//			return null;
+	//		}
+	//
+	//
+	//		/**
+	//		 * After completing background task Dismiss the progress dialog
+	//		 * **/
+	//		protected void onPostExecute(String file_url) {
+	//			// dismiss the dialog once product uupdated
+	//			pDialog.dismiss();
+	//		}
+	//	}
+	/* still need to update all other players by sliding them over
+	 * 	along with removing all player object info the player holds */
 
 }
