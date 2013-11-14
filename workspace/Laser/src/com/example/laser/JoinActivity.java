@@ -65,7 +65,7 @@ public class JoinActivity extends Activity {
 	private static String url_update_game =  "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/update_game.php";
 	private static String url_update_player = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/add_player.php";
 	private static String url_get_game = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/get_game.php";
-
+	private static String url_update_delete_gameinfo = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/delete_update_game_info.php";
 	//10.0.0.16
 	// url to delete product
 
@@ -73,7 +73,7 @@ public class JoinActivity extends Activity {
 	// JSON Node names
 	private static final String TAG_GAME_INFO = "game_info";
 	private static final String TAG_SUCCESS = "success";
-	private static final String TAG_GAMES = "gameinfo";
+	private static final String TAG_GAMES = "games";
 	private static final String TAG_PID = "game_id";
 	private static final String TAG_CURRENT_PLAYERS = "current_players";
 	private static String play1 = "";
@@ -112,14 +112,13 @@ public class JoinActivity extends Activity {
 	TextView team22;
 	TextView team23;
 	TextView team24;
-
+	TextView test;
 	String GameMode = "";
 
 	Player player;
 	ArrayList<String> AllColors = new ArrayList<String>();		
 	ArrayList<String> AllPlayers = new ArrayList<String>();
 	ArrayList<String> AllPlayersTemp = new ArrayList<String>();		
-
 
 
 
@@ -177,12 +176,13 @@ public class JoinActivity extends Activity {
 		team24 = (TextView)findViewById(R.id.team24);
 		team24.setTextColor(Color.RED);
 		//this is how you get it so it doesnt crash
-		/*
-		TextView test = (TextView)findViewById(R.id.testView);
-		test.setText(player.getPlayerID()+"");
-		*/
+		GetCurrentPlayers();
+		test = (TextView)findViewById(R.id.testView);
 		//players.setText(Allplayers);
 		//new LoadPlayers().execute();
+
+
+
 
 
 
@@ -270,14 +270,14 @@ public class JoinActivity extends Activity {
 					JSONObject c = products.getJSONObject(0);
 
 					// Storing each json item in variable
-					AllPlayersTemp.add(getName(c.getString("player1")));
-					AllPlayersTemp.add(getName(c.getString("player2")));
-					AllPlayersTemp.add(getName(c.getString("player3")));
-					AllPlayersTemp.add(getName(c.getString("player4")));
-					AllPlayersTemp.add(getName(c.getString("player5")));
-					AllPlayersTemp.add(getName(c.getString("player6")));
-					AllPlayersTemp.add(getName(c.getString("player7")));
-					AllPlayersTemp.add(getName(c.getString("player8")));
+					AllPlayers.add(c.getString("player1"));
+					AllPlayers.add(c.getString("player2"));
+					AllPlayers.add(c.getString("player3"));
+					AllPlayers.add(c.getString("player4"));
+					AllPlayers.add(c.getString("player5"));
+					AllPlayers.add(c.getString("player6"));
+					AllPlayers.add(c.getString("player7"));
+					AllPlayers.add(c.getString("player8"));
 					AllColors.add(c.getString("player1Team"));
 					AllColors.add(c.getString("player2Team"));
 					AllColors.add(c.getString("player3Team"));
@@ -286,7 +286,16 @@ public class JoinActivity extends Activity {
 					AllColors.add(c.getString("player6Team"));
 					AllColors.add(c.getString("player7Team"));
 					AllColors.add(c.getString("player8Team"));
-
+					//updates the player spot if a player quits
+					/*
+					if (Integer.parseInt(AllPlayers.get((player.getPlayerSpot()-1))) != player.getPlayerID()){
+						for(int i=0; i<AllPlayers.size(); i++){
+							if (Integer.parseInt(AllPlayers.get(i)) == player.getPlayerID()){
+								player.setPlayerSpot(i+1);
+							}
+						}
+					}
+					*/
 					// Starting new intent
 
 				}
@@ -333,21 +342,19 @@ public class JoinActivity extends Activity {
 		}
 
 		protected void onProgressUpdate(String... values) {
-			if(AllPlayers != AllPlayersTemp){
-				AllPlayers = AllPlayersTemp;
-				if (GameMode.charAt(0) == 'F'){
-					player1.setText(AllPlayers.get(0));
-					player2.setText(AllPlayers.get(1));
-					player3.setText(AllPlayers.get(2));
-					player4.setText(AllPlayers.get(3));
-					player5.setText(AllPlayers.get(4));
-					player6.setText(AllPlayers.get(5));
-					player7.setText(AllPlayers.get(6));
-					player8.setText(AllPlayers.get(7));
-				}
-				if (GameMode.charAt(0) == 'T'){
-					setDisplay();
-				}
+			test.setText(player.getPlayerID()+"");
+			if (GameMode.charAt(0) == 'F'){
+				player1.setText(AllPlayers.get(0));
+				player2.setText(AllPlayers.get(1));
+				player3.setText(AllPlayers.get(2));
+				player4.setText(AllPlayers.get(3));
+				player5.setText(AllPlayers.get(4));
+				player6.setText(AllPlayers.get(5));
+				player7.setText(AllPlayers.get(6));
+				player8.setText(AllPlayers.get(7));
+			}
+			if (GameMode.charAt(0) == 'T'){
+				setDisplay();
 			}
 		}
 
@@ -380,173 +387,282 @@ public class JoinActivity extends Activity {
 			}
 			//SET BLUE TEAM DISPLAY
 			if (blue[0] != 9){
-				team11.setText(AllPlayers.get(blue[0]));
+				team11.setText(getName(AllPlayers.get(blue[0])));
+				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(blue[0]))){
+					team11.setBackgroundColor(Color.YELLOW);
+				}
+
 			}
 			if (blue[1] != 9){
-				team12.setText(AllPlayers.get(blue[1]));
+				team12.setText(getName(AllPlayers.get(blue[1])));
+				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(blue[1]))){
+					team12.setBackgroundColor(Color.YELLOW);
+				}
 			}
 			if (blue[2] != 9){
-				team13.setText(AllPlayers.get(blue[2]));
+				team13.setText(getName(AllPlayers.get(blue[2])));
+				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(blue[2]))){
+					team13.setBackgroundColor(Color.YELLOW);
+				}
 			}
 			if (blue[3] != 9){
-				team14.setText(AllPlayers.get(blue[3]));
+				team14.setText(getName(AllPlayers.get(blue[3])));
+				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(blue[3]))){
+					team14.setBackgroundColor(Color.YELLOW);
+				}
 
 			}
 			//SET RED TEAM DISPLAY
 			if (red[0] != 9){
-				team21.setText(AllPlayers.get(red[0]));
+				team21.setText(getName(AllPlayers.get(red[0])));
+				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(red[0]))){
+					team21.setBackgroundColor(Color.YELLOW);
+				}
 			}
 			if (red[1] != 9){
-				team22.setText(AllPlayers.get(red[1]));
+				team22.setText(getName(AllPlayers.get(red[1])));
+				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(red[1]))){
+					team22.setBackgroundColor(Color.YELLOW);
+				}
 			}
 			if (red[2] != 9){
-				team23.setText(AllPlayers.get(red[2]));
+				team23.setText(getName(AllPlayers.get(red[2])));
+				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(red[2]))){
+					team23.setBackgroundColor(Color.YELLOW);
+				}
 			}
 			if (red[3] != 9){
-				team24.setText(AllPlayers.get(red[3]));
+				team24.setText(getName(AllPlayers.get(red[3])));
+				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(red[3]))){
+					team24.setBackgroundColor(Color.YELLOW);
+				}
 			}
 
 		}
 	}
-	//	@Override
-	//	public boolean onKeyDown(int keyCode, KeyEvent event) {
-	//		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-	//			removePlayer();
-	//			/*
-	//			Intent in = new Intent(getApplicationContext(),
-	//					MainActivity.class);
-	//			// starting new activity and expecting some response back
-	//			startActivity(in);	    
-	//			*/}
-	//		return super.onKeyDown(keyCode, event);
-	//	}
-	//	/**
-	//	 * Background Async Task to  Save product Details
-	//	 * */
-	//	private void removePlayer() {	//first get the current players
-	//		String MaxPlayers = null;
-	//		List<NameValuePair> params = new ArrayList<NameValuePair>();
-	//		params.add(new BasicNameValuePair("game_id", pid));
-	//
-	//		// getting JSON string from URL
-	//		JSONObject json = jParser.makeHttpRequest(url_get_game, "GET", params);
-	//
-	//
-	//		// Check your log cat for JSON reponse
-	//		Log.d("All Products: ", json.toString());
-	//
-	//		try {
-	//			// Checking for SUCCESS TAG
-	//			int success = json.getInt(TAG_SUCCESS);
-	//
-	//			if (success == 1) {
-	//				// products found
-	//				// Getting Array of Products
-	//				products = json.getJSONArray(TAG_GAMES);
-	//
-	//
-	//				// looping through All Products
-	//
-	//				JSONObject c = products.getJSONObject(0);
-	//
-	//				// Storing each json item in variable
-	//				tempCurrentPlayers = c.getString("current_players");
-	//
-	//
-	//
-	//				// Starting new intent
-	//
-	//
-	//			}
-	//			else {
-	//				// failed to update product
-	//			}
-	//		} catch (JSONException e) {
-	//			e.printStackTrace();
-	//		}
-	//
-	//		new UpdateGameInfo().execute();
-	//		//Process char
-	//
-	//	}
-	//	class UpdateGameInfo extends AsyncTask<String, String, String> {	//updates current players to current players - 1
-	//
-	//		/**
-	//		 * Before starting background thread Show Progress Dialog
-	//		 * */
-	//		@Override
-	//		protected void onPreExecute() {
-	//			super.onPreExecute();
-	//			pDialog = new ProgressDialog(JoinActivity.this);
-	//			pDialog.setMessage("Leaving Game");
-	//			pDialog.setIndeterminate(false);
-	//			pDialog.setCancelable(true);
-	//			pDialog.show();
-	//		}
-	//
-	//		/**
-	//		 * Saving product
-	//		 * */
-	//		protected String doInBackground(String... args) {
-	//
-	//			// getting updated data from EditTexts
-	//
-	//			// Building Parameters
-	//			
-	//			List<NameValuePair> params = new ArrayList<NameValuePair>();
-	//			params.add(new BasicNameValuePair("game_id", pid));
-	//			params.add(new BasicNameValuePair("current_players", ""+(Integer.valueOf(tempCurrentPlayers)-1)));
-	//
-	//			// getting JSON string from URL
-	//			JSONObject json = jParser.makeHttpRequest(url_update_game, "POST", params);
-	//
-	//
-	//			// Check your log cat for JSON reponse
-	//			Log.d("All Products: ", json.toString());
-	//
-	//			try {
-	//				// Checking for SUCCESS TAG
-	//				int success = json.getInt(TAG_SUCCESS);
-	//
-	//				if (success == 1) {
-	//					// products found
-	//					// Getting Array of Products
-	//					products = json.getJSONArray(TAG_GAMES);
-	//
-	//
-	//					// looping through All Products
-	//
-	//					JSONObject c = products.getJSONObject(0);
-	//
-	//
-	//
-	//
-	//
-	//					// Starting new intent
-	//
-	//
-	//				}
-	//				else {
-	//					// failed to update product
-	//				}
-	//			} catch (JSONException e) {
-	//				e.printStackTrace();
-	//			}
-	//
-	//
-	//
-	//			return null;
-	//		}
-	//
-	//
-	//		/**
-	//		 * After completing background task Dismiss the progress dialog
-	//		 * **/
-	//		protected void onPostExecute(String file_url) {
-	//			// dismiss the dialog once product uupdated
-	//			pDialog.dismiss();
-	//		}
-	//	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+			GetCurrentPlayers();
+			UpdateCurrentPlayers();
+			updateGameInfo();
+			player.earseAll();
+			Intent in = new Intent(getApplicationContext(),
+					MainActivity.class);
+			// starting new activity and expecting some response back
+			startActivity(in);	    
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	/**
+	 * Background Async Task to  Save product Details
+	 * */
+	private void GetCurrentPlayers() {	//first get the current players
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("game_id", pid));
+
+		// getting JSON string from URL
+		JSONObject json = jParser.makeHttpRequest(url_get_game, "GET", params);
+
+
+		// Check your log cat for JSON reponse
+		Log.d("All Products: ", json.toString());
+
+		try {
+			// Checking for SUCCESS TAG
+			int success = json.getInt(TAG_SUCCESS);
+
+			if (success == 1) {
+				// products found
+				// Getting Array of Products
+				products = json.getJSONArray(TAG_GAMES);
+
+
+				// looping through All Products
+
+				JSONObject c = products.getJSONObject(0);
+
+				// Storing each json item in variable
+				tempCurrentPlayers = c.getString("current_players");
+
+
+
+
+				// Starting new intent
+
+
+			}
+			else {
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		//Process char
+
+	}
+	private void UpdateCurrentPlayers(){
+		// Building Parameters
+		//int temp = Integer.parseInt(tempCurrentPlayers);
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("game_id", pid));
+		params.add(new BasicNameValuePair("current_players", (Integer.valueOf(tempCurrentPlayers)-1)+""));
+
+		// getting JSON string from URL
+		JSONObject json = jParser.makeHttpRequest(url_update_game, "POST", params);
+
+
+		// Check your log cat for JSON reponse
+		Log.d("All Products: ", json.toString());
+
+		try {
+			// Checking for SUCCESS TAG
+			int success = json.getInt(TAG_SUCCESS);
+
+			if (success == 1) {
+				// products found
+				// Getting Array of Products
+				products = json.getJSONArray(TAG_GAMES);
+
+
+				// looping through All Products
+
+				JSONObject c = products.getJSONObject(0);
+
+
+
+
+
+				// Starting new intent
+
+
+			}
+			else {
+				// failed to update product
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+
+
+	}
+public void updateGameInfo(){
+	// Building Parameters
+	List<NameValuePair> params = new ArrayList<NameValuePair>();
+	AllPlayers.remove((player.getPlayerSpot()-1));
+	AllColors.remove((player.getPlayerSpot()-1));
+	params.add(new BasicNameValuePair("game_id", pid));
+
+	if (AllPlayers.size()>= 1){
+		params.add(new BasicNameValuePair("player1", AllPlayers.get(0).toString()));
+		params.add(new BasicNameValuePair("playerTeam1", AllColors.get(0).toString()));
+	}
+	else{
+		params.add(new BasicNameValuePair("player1", "0"));
+		params.add(new BasicNameValuePair("playerTeam1", ""));
+
+	}
+	if (AllPlayers.size()>= 2){
+		params.add(new BasicNameValuePair("player2", AllPlayers.get(1).toString()));
+		params.add(new BasicNameValuePair("playerTeam2", AllColors.get(1).toString()));
+
+	}
+	else{
+		params.add(new BasicNameValuePair("player2", "0"));
+		params.add(new BasicNameValuePair("playerTeam2", ""));
+
+	}
+	if (AllPlayers.size()>= 3){
+		params.add(new BasicNameValuePair("player3", AllPlayers.get(2).toString()));
+		params.add(new BasicNameValuePair("playerTeam3", AllColors.get(2).toString()));
+
+	}
+	else{
+		params.add(new BasicNameValuePair("player3", "0"));
+		params.add(new BasicNameValuePair("playerTeam3", ""));
+
+	}
+	if (AllPlayers.size()>= 4){
+		params.add(new BasicNameValuePair("player4", AllPlayers.get(3).toString()));
+		params.add(new BasicNameValuePair("playerTeam4", AllColors.get(3).toString()));
+
+	}
+	else{
+		params.add(new BasicNameValuePair("player4", "0"));
+		params.add(new BasicNameValuePair("playerTeam4", ""));
+
+	}
+	if (AllPlayers.size()>= 5){
+		params.add(new BasicNameValuePair("player5", AllPlayers.get(4).toString()));
+		params.add(new BasicNameValuePair("playerTeam5", AllColors.get(4).toString()));
+	}
+	else{
+		params.add(new BasicNameValuePair("player5", "0"));
+		params.add(new BasicNameValuePair("playerTeam5", ""));
+
+	}
+	if (AllPlayers.size()>= 6){
+		params.add(new BasicNameValuePair("player6", AllPlayers.get(5).toString()));
+		params.add(new BasicNameValuePair("playerTeam6", AllColors.get(5).toString()));
+	}
+	else{
+		params.add(new BasicNameValuePair("player6", "0"));
+		params.add(new BasicNameValuePair("playerTeam6", ""));
+	}
+	if (AllPlayers.size()>= 7){
+		params.add(new BasicNameValuePair("player7", AllPlayers.get(6).toString()));
+		params.add(new BasicNameValuePair("playerTeam7", AllColors.get(6).toString()));
+
+	}
+	else{
+		params.add(new BasicNameValuePair("player7", "0"));
+		params.add(new BasicNameValuePair("playerTeam1", ""));
+
+	}
+
+
+	// getting JSON string from URL
+	JSONObject json = jParser.makeHttpRequest(url_update_delete_gameinfo, "POST", params);
+
+
+	// Check your log cat for JSON reponse
+	Log.d("All Products: ", json.toString());
+
+	try {
+		// Checking for SUCCESS TAG
+		int success = json.getInt(TAG_SUCCESS);
+
+		if (success == 1) {
+			// products found
+			// Getting Array of Products
+			products = json.getJSONArray(TAG_GAME_INFO);
+
+
+			// looping through All Products
+
+			JSONObject c = products.getJSONObject(0);
+
+
+
+
+
+			// Starting new intent
+
+
+		}
+		else {
+			// failed to update product
+		}
+	} catch (JSONException e) {
+		e.printStackTrace();
+	}
+
+
+}
+
+
 	/* still need to update all other players by sliding them over
 	 * 	along with removing all player object info the player holds */
 

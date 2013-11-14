@@ -8,7 +8,7 @@ public class Player implements Serializable {
 	String playerName;
 	int playerID;
 	int gameID;
-	String playerposition;
+	int playerspot; // the spot in which they joined, ex. if they are the 5th player this would be 5
 	int xLoc;
 	int yLoc;
 	int shotsFired;
@@ -23,7 +23,7 @@ public class Player implements Serializable {
 		this.gameID = gameID;
 		this.shotsFired = 0;
 		this.hit = 0;
-		this.playerposition = "";
+		this.playerspot = 0;
 		
 		playerHit = new Hashtable<Integer, Integer>();
 		hitByPlayer = new Hashtable<Integer, Integer>();
@@ -60,8 +60,8 @@ public class Player implements Serializable {
 			//update mysql db by calling php with async function
 		}
 	}
-	public void setPlayerNum(String num){
-		this.playerposition = num;
+	public void setPlayerSpot(int num){
+		this.playerspot = num;
 	}
 	public void setTeam(String team){
 		this.team = team;
@@ -69,12 +69,23 @@ public class Player implements Serializable {
 	public String getTeam(){
 		return team;
 	}
-	public String getPlayerNum(){
-		return playerposition;
+	public int getPlayerSpot(){
+		return playerspot;
 	}
 	
 	public int getPlayerID(){
 		return playerID;
+	}
+	public int getGameID(){
+		return gameID;
+	}
+	
+	public void earseAll() {
+		playerName = "";
+		playerID = 0;
+		gameID = 0;
+		playerspot = 0;
+		team = "";
 	}
 	
 	

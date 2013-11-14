@@ -166,6 +166,7 @@
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/linearLayout3"
         android:layout_below="@+id/linearLayout1"
-        android:text="TextView" />
+        android:text="TextView"
+        android:textSize="30sp" />
 
 </RelativeLayout>

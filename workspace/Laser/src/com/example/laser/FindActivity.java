@@ -565,7 +565,7 @@ public class FindActivity extends ListActivity {
 			// dismiss the dialog after getting all products
 			pDialog.dismiss();
 			// updating UI from Background Thread
-			player.setPlayerNum(myplayer.toString());
+			player.setPlayerSpot(left);
 
 			Intent in = new Intent(FindActivity.this,
 					JoinActivity.class);

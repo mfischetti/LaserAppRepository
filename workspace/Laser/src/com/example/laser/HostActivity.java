@@ -328,7 +328,7 @@ public class HostActivity extends Activity implements OnClickListener {
 		 * */
 		protected String doInBackground(String... arg0) {
 			int playernumber = (int) (1 + (Math.random() * 8));
-			player = new Player(Integer.parseInt(gamepid), playernumber);
+			player = new Player(playernumber,Integer.parseInt(gamepid));
 			String color;
 			if (game_mode.charAt(0) == 'T'){
 				color = pickcolor();
@@ -337,6 +337,7 @@ public class HostActivity extends Activity implements OnClickListener {
 				color = "Neutral";
 			}
 			player.setTeam(color);
+			player.setPlayerSpot(1);
 			List<NameValuePair> params2 = new ArrayList<NameValuePair>();
 			params2.add(new BasicNameValuePair("game_id", gamepid));
 			params2.add(new BasicNameValuePair("player1", playernumber+""));
