@@ -114,7 +114,8 @@ public class JoinActivity extends Activity {
 	TextView team24;
 	TextView test;
 	String GameMode = "";
-
+	int newCurrentPlayers;
+	
 	Player player;
 	ArrayList<String> AllColors = new ArrayList<String>();		
 	ArrayList<String> AllPlayers = new ArrayList<String>();
@@ -177,7 +178,7 @@ public class JoinActivity extends Activity {
 		team24.setTextColor(Color.RED);
 		//this is how you get it so it doesnt crash
 		GetCurrentPlayers();
-		test = (TextView)findViewById(R.id.testView);
+
 		//players.setText(Allplayers);
 		//new LoadPlayers().execute();
 
@@ -243,7 +244,8 @@ public class JoinActivity extends Activity {
 		 * */
 		protected String doInBackground(String... args) {
 
-
+			AllPlayers.clear();
+			AllColors.clear();
 			// Building Parameters
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("game_id", pid));
@@ -287,7 +289,7 @@ public class JoinActivity extends Activity {
 					AllColors.add(c.getString("player7Team"));
 					AllColors.add(c.getString("player8Team"));
 					//updates the player spot if a player quits
-					/*
+					
 					if (Integer.parseInt(AllPlayers.get((player.getPlayerSpot()-1))) != player.getPlayerID()){
 						for(int i=0; i<AllPlayers.size(); i++){
 							if (Integer.parseInt(AllPlayers.get(i)) == player.getPlayerID()){
@@ -295,7 +297,7 @@ public class JoinActivity extends Activity {
 							}
 						}
 					}
-					*/
+					
 					// Starting new intent
 
 				}
@@ -305,7 +307,7 @@ public class JoinActivity extends Activity {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			publishProgress(args);
+			//publishProgress(args);
 
 			return null;
 		}
@@ -340,9 +342,18 @@ public class JoinActivity extends Activity {
 				return "";
 			}
 		}
-
+/*
 		protected void onProgressUpdate(String... values) {
-			test.setText(player.getPlayerID()+"");
+
+		}
+
+*/
+
+		/**
+		 * After completing background task Dismiss the progress dialog
+		 * **/
+		protected void onPostExecute(String file_url) {
+
 			if (GameMode.charAt(0) == 'F'){
 				player1.setText(AllPlayers.get(0));
 				player2.setText(AllPlayers.get(1));
@@ -356,14 +367,6 @@ public class JoinActivity extends Activity {
 			if (GameMode.charAt(0) == 'T'){
 				setDisplay();
 			}
-		}
-
-
-
-		/**
-		 * After completing background task Dismiss the progress dialog
-		 * **/
-		protected void onPostExecute(String file_url) {
 			// dismiss the dialog after getting all products
 			//pDialog.dismiss();
 
@@ -393,17 +396,26 @@ public class JoinActivity extends Activity {
 				}
 
 			}
+			else{
+				team11.setText("");
+			}
 			if (blue[1] != 9){
 				team12.setText(getName(AllPlayers.get(blue[1])));
 				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(blue[1]))){
 					team12.setBackgroundColor(Color.YELLOW);
 				}
 			}
+			else{
+				team12.setText("");
+			}
 			if (blue[2] != 9){
 				team13.setText(getName(AllPlayers.get(blue[2])));
 				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(blue[2]))){
 					team13.setBackgroundColor(Color.YELLOW);
 				}
+			}
+			else{
+				team13.setText("");
 			}
 			if (blue[3] != 9){
 				team14.setText(getName(AllPlayers.get(blue[3])));
@@ -412,6 +424,9 @@ public class JoinActivity extends Activity {
 				}
 
 			}
+			else{
+				team14.setText("");
+			}
 			//SET RED TEAM DISPLAY
 			if (red[0] != 9){
 				team21.setText(getName(AllPlayers.get(red[0])));
@@ -419,11 +434,17 @@ public class JoinActivity extends Activity {
 					team21.setBackgroundColor(Color.YELLOW);
 				}
 			}
+			else{
+				team21.setText("");
+			}
 			if (red[1] != 9){
 				team22.setText(getName(AllPlayers.get(red[1])));
 				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(red[1]))){
 					team22.setBackgroundColor(Color.YELLOW);
 				}
+			}
+			else{
+				team22.setText("");
 			}
 			if (red[2] != 9){
 				team23.setText(getName(AllPlayers.get(red[2])));
@@ -431,11 +452,17 @@ public class JoinActivity extends Activity {
 					team23.setBackgroundColor(Color.YELLOW);
 				}
 			}
+			else{
+				team23.setText("");
+			}
 			if (red[3] != 9){
 				team24.setText(getName(AllPlayers.get(red[3])));
 				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(red[3]))){
 					team24.setBackgroundColor(Color.YELLOW);
 				}
+			}
+			else{
+				team24.setText("");
 			}
 
 		}
@@ -447,7 +474,8 @@ public class JoinActivity extends Activity {
 			GetCurrentPlayers();
 			UpdateCurrentPlayers();
 			updateGameInfo();
-			player.earseAll();
+			//player.earseAll();
+			
 			Intent in = new Intent(getApplicationContext(),
 					MainActivity.class);
 			// starting new activity and expecting some response back
@@ -505,6 +533,7 @@ public class JoinActivity extends Activity {
 	private void UpdateCurrentPlayers(){
 		// Building Parameters
 		//int temp = Integer.parseInt(tempCurrentPlayers);
+		newCurrentPlayers = Integer.valueOf(tempCurrentPlayers)-1;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("game_id", pid));
 		params.add(new BasicNameValuePair("current_players", (Integer.valueOf(tempCurrentPlayers)-1)+""));
