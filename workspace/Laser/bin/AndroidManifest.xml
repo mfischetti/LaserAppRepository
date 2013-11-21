@@ -50,6 +50,14 @@
             android:name="com.example.laser.JoinActivity"
             android:label="@string/title_activity_join" >
         </activity>
+        <activity
+            android:name="com.example.laser.GameActivity"
+            android:label="@string/title_activity_game"
+            android:parentActivityName="com.example.laser.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.laser.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

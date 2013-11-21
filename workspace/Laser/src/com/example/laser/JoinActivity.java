@@ -34,11 +34,12 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class JoinActivity extends Activity {
+public class JoinActivity extends Activity implements OnClickListener {
 
 	TextView playerslist;
 	EditText txtPrice;
@@ -60,13 +61,13 @@ public class JoinActivity extends Activity {
 
 
 	// single product url
-	private static String url_get_gameinfo = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/get_game_info.php";
+	private static String url_get_gameinfo = "http://laserapp.no-ip.biz/laserDatabase/android_connect/get_game_info.php";
 	// url to update product
-	private static String url_update_game =  "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/update_game.php";
-	private static String url_update_player = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/add_player.php";
-	private static String url_get_game = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/get_game.php";
-	private static String url_update_delete_gameinfo = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/delete_update_game_info.php";
-	//10.0.0.16
+	private static String url_update_game =  "http://laserapp.no-ip.biz/laserDatabase/android_connect/update_game.php";
+	private static String url_update_player = "http://laserapp.no-ip.biz/laserDatabase/android_connect/add_player.php";
+	private static String url_get_game = "http://laserapp.no-ip.biz/laserDatabase/android_connect/get_game.php";
+	private static String url_update_delete_gameinfo = "http://laserapp.no-ip.biz/laserDatabase/android_connect/delete_update_game_info.php";
+	private static String url_start_game = "http://laserapp.no-ip.biz/laserDatabase/android_connect/create_started_game.php";
 	// url to delete product
 
 
@@ -115,7 +116,7 @@ public class JoinActivity extends Activity {
 	TextView test;
 	String GameMode = "";
 	int newCurrentPlayers;
-	
+	Button start;
 	Player player;
 	ArrayList<String> AllColors = new ArrayList<String>();		
 	ArrayList<String> AllPlayers = new ArrayList<String>();
@@ -136,6 +137,8 @@ public class JoinActivity extends Activity {
 
 
 
+		start = (Button)findViewById(R.id.startButton);
+		start.setOnClickListener(this);
 		pid = bundle.getString("gamepid");
 		currentPlayers = bundle.getString("current_players");
 		//String player = bundle.getString("player1");
@@ -179,8 +182,7 @@ public class JoinActivity extends Activity {
 		//this is how you get it so it doesnt crash
 		GetCurrentPlayers();
 
-		//players.setText(Allplayers);
-		//new LoadPlayers().execute();
+
 
 
 
@@ -690,9 +692,94 @@ public void updateGameInfo(){
 
 
 }
+class StartGame extends AsyncTask<String, String, String> {
+
+	@Override
+	protected void onPreExecute() {
+		super.onPreExecute();
+		pDialog = new ProgressDialog(JoinActivity.this);
+		pDialog.setMessage("Starting Game. Please wait...");
+		pDialog.setIndeterminate(false);
+		pDialog.setCancelable(false);
+		pDialog.show();
+	}
+
+	/**
+	 * getting All products from url
+	 * */
+	protected String doInBackground(String... args) {
+	
+		List<NameValuePair> params2 = new ArrayList<NameValuePair>();
+		
+		params2.add(new BasicNameValuePair("gamenumber","game"+pid)); //add player to red or blue
+		params2.add(new BasicNameValuePair("pid",pid)); //add player to red or blue
+
+		JSONObject json = jsonParser.makeHttpRequest(url_start_game,
+				"POST", params2);
 
 
-	/* still need to update all other players by sliding them over
-	 * 	along with removing all player object info the player holds */
+		// check log cat fro response
+		Log.d("Create Response", json.toString());
 
+		// check for success tag
+		try {
+			int success = json.getInt(TAG_SUCCESS);
+
+			if (success == 1) {
+
+
+				// closing this screen
+			} else {
+
+				// failed to create product
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+
+
+
+	/**
+	 * After completing background task Dismiss the progress dialog
+	 * **/
+	protected void onPostExecute(String file_url) {
+		// dismiss the dialog after getting all products
+		pDialog.dismiss();
+		// updating UI from Background Thread
+		
+		Intent in = new Intent(JoinActivity.this,
+				GameActivity.class);
+		// sending pid to next activity
+		
+
+
+		// starting new activity and expecting some response back
+		startActivity(in);
+
+	}
+
+
+	
 }
+
+@Override
+public void onClick(View v) {
+	if(v.getId() == R.id.startButton){
+		
+
+		new StartGame().execute();
+
+
+
+		// updating UI from Background Thread
+		//servername.setText(gamepid);
+
+
+	}
+}
+}
+
