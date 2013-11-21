@@ -27,6 +27,7 @@ import com.example.laser.HostActivity.CreateGameInfo;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -128,6 +129,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.activity_join);
 		Bundle bundle = getIntent().getExtras();
 
@@ -291,7 +293,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 					AllColors.add(c.getString("player7Team"));
 					AllColors.add(c.getString("player8Team"));
 					//updates the player spot if a player quits
-					
+
 					if (Integer.parseInt(AllPlayers.get((player.getPlayerSpot()-1))) != player.getPlayerID()){
 						for(int i=0; i<AllPlayers.size(); i++){
 							if (Integer.parseInt(AllPlayers.get(i)) == player.getPlayerID()){
@@ -299,7 +301,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 							}
 						}
 					}
-					
+
 					// Starting new intent
 
 				}
@@ -344,12 +346,12 @@ public class JoinActivity extends Activity implements OnClickListener {
 				return "";
 			}
 		}
-/*
+		/*
 		protected void onProgressUpdate(String... values) {
 
 		}
 
-*/
+		 */
 
 		/**
 		 * After completing background task Dismiss the progress dialog
@@ -477,7 +479,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 			UpdateCurrentPlayers();
 			updateGameInfo();
 			//player.earseAll();
-			
+
 			Intent in = new Intent(getApplicationContext(),
 					MainActivity.class);
 			// starting new activity and expecting some response back
@@ -579,207 +581,208 @@ public class JoinActivity extends Activity implements OnClickListener {
 
 
 	}
-public void updateGameInfo(){
-	// Building Parameters
-	List<NameValuePair> params = new ArrayList<NameValuePair>();
-	AllPlayers.remove((player.getPlayerSpot()-1));
-	AllColors.remove((player.getPlayerSpot()-1));
-	params.add(new BasicNameValuePair("game_id", pid));
+	public void updateGameInfo(){
+		// Building Parameters
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		AllPlayers.remove((player.getPlayerSpot()-1));
+		AllColors.remove((player.getPlayerSpot()-1));
+		params.add(new BasicNameValuePair("game_id", pid));
 
-	if (AllPlayers.size()>= 1){
-		params.add(new BasicNameValuePair("player1", AllPlayers.get(0).toString()));
-		params.add(new BasicNameValuePair("playerTeam1", AllColors.get(0).toString()));
-	}
-	else{
-		params.add(new BasicNameValuePair("player1", "0"));
-		params.add(new BasicNameValuePair("playerTeam1", ""));
-
-	}
-	if (AllPlayers.size()>= 2){
-		params.add(new BasicNameValuePair("player2", AllPlayers.get(1).toString()));
-		params.add(new BasicNameValuePair("playerTeam2", AllColors.get(1).toString()));
-
-	}
-	else{
-		params.add(new BasicNameValuePair("player2", "0"));
-		params.add(new BasicNameValuePair("playerTeam2", ""));
-
-	}
-	if (AllPlayers.size()>= 3){
-		params.add(new BasicNameValuePair("player3", AllPlayers.get(2).toString()));
-		params.add(new BasicNameValuePair("playerTeam3", AllColors.get(2).toString()));
-
-	}
-	else{
-		params.add(new BasicNameValuePair("player3", "0"));
-		params.add(new BasicNameValuePair("playerTeam3", ""));
-
-	}
-	if (AllPlayers.size()>= 4){
-		params.add(new BasicNameValuePair("player4", AllPlayers.get(3).toString()));
-		params.add(new BasicNameValuePair("playerTeam4", AllColors.get(3).toString()));
-
-	}
-	else{
-		params.add(new BasicNameValuePair("player4", "0"));
-		params.add(new BasicNameValuePair("playerTeam4", ""));
-
-	}
-	if (AllPlayers.size()>= 5){
-		params.add(new BasicNameValuePair("player5", AllPlayers.get(4).toString()));
-		params.add(new BasicNameValuePair("playerTeam5", AllColors.get(4).toString()));
-	}
-	else{
-		params.add(new BasicNameValuePair("player5", "0"));
-		params.add(new BasicNameValuePair("playerTeam5", ""));
-
-	}
-	if (AllPlayers.size()>= 6){
-		params.add(new BasicNameValuePair("player6", AllPlayers.get(5).toString()));
-		params.add(new BasicNameValuePair("playerTeam6", AllColors.get(5).toString()));
-	}
-	else{
-		params.add(new BasicNameValuePair("player6", "0"));
-		params.add(new BasicNameValuePair("playerTeam6", ""));
-	}
-	if (AllPlayers.size()>= 7){
-		params.add(new BasicNameValuePair("player7", AllPlayers.get(6).toString()));
-		params.add(new BasicNameValuePair("playerTeam7", AllColors.get(6).toString()));
-
-	}
-	else{
-		params.add(new BasicNameValuePair("player7", "0"));
-		params.add(new BasicNameValuePair("playerTeam1", ""));
-
-	}
-
-
-	// getting JSON string from URL
-	JSONObject json = jParser.makeHttpRequest(url_update_delete_gameinfo, "POST", params);
-
-
-	// Check your log cat for JSON reponse
-	Log.d("All Products: ", json.toString());
-
-	try {
-		// Checking for SUCCESS TAG
-		int success = json.getInt(TAG_SUCCESS);
-
-		if (success == 1) {
-			// products found
-			// Getting Array of Products
-			products = json.getJSONArray(TAG_GAME_INFO);
-
-
-			// looping through All Products
-
-			JSONObject c = products.getJSONObject(0);
-
-
-
-
-
-			// Starting new intent
-
+		if (AllPlayers.size()>= 1){
+			params.add(new BasicNameValuePair("player1", AllPlayers.get(0).toString()));
+			params.add(new BasicNameValuePair("playerTeam1", AllColors.get(0).toString()));
+		}
+		else{
+			params.add(new BasicNameValuePair("player1", "0"));
+			params.add(new BasicNameValuePair("playerTeam1", ""));
 
 		}
-		else {
-			// failed to update product
+		if (AllPlayers.size()>= 2){
+			params.add(new BasicNameValuePair("player2", AllPlayers.get(1).toString()));
+			params.add(new BasicNameValuePair("playerTeam2", AllColors.get(1).toString()));
+
 		}
-	} catch (JSONException e) {
-		e.printStackTrace();
-	}
+		else{
+			params.add(new BasicNameValuePair("player2", "0"));
+			params.add(new BasicNameValuePair("playerTeam2", ""));
+
+		}
+		if (AllPlayers.size()>= 3){
+			params.add(new BasicNameValuePair("player3", AllPlayers.get(2).toString()));
+			params.add(new BasicNameValuePair("playerTeam3", AllColors.get(2).toString()));
+
+		}
+		else{
+			params.add(new BasicNameValuePair("player3", "0"));
+			params.add(new BasicNameValuePair("playerTeam3", ""));
+
+		}
+		if (AllPlayers.size()>= 4){
+			params.add(new BasicNameValuePair("player4", AllPlayers.get(3).toString()));
+			params.add(new BasicNameValuePair("playerTeam4", AllColors.get(3).toString()));
+
+		}
+		else{
+			params.add(new BasicNameValuePair("player4", "0"));
+			params.add(new BasicNameValuePair("playerTeam4", ""));
+
+		}
+		if (AllPlayers.size()>= 5){
+			params.add(new BasicNameValuePair("player5", AllPlayers.get(4).toString()));
+			params.add(new BasicNameValuePair("playerTeam5", AllColors.get(4).toString()));
+		}
+		else{
+			params.add(new BasicNameValuePair("player5", "0"));
+			params.add(new BasicNameValuePair("playerTeam5", ""));
+
+		}
+		if (AllPlayers.size()>= 6){
+			params.add(new BasicNameValuePair("player6", AllPlayers.get(5).toString()));
+			params.add(new BasicNameValuePair("playerTeam6", AllColors.get(5).toString()));
+		}
+		else{
+			params.add(new BasicNameValuePair("player6", "0"));
+			params.add(new BasicNameValuePair("playerTeam6", ""));
+		}
+		if (AllPlayers.size()>= 7){
+			params.add(new BasicNameValuePair("player7", AllPlayers.get(6).toString()));
+			params.add(new BasicNameValuePair("playerTeam7", AllColors.get(6).toString()));
+
+		}
+		else{
+			params.add(new BasicNameValuePair("player7", "0"));
+			params.add(new BasicNameValuePair("playerTeam1", ""));
+
+		}
 
 
-}
-class StartGame extends AsyncTask<String, String, String> {
-
-	@Override
-	protected void onPreExecute() {
-		super.onPreExecute();
-		pDialog = new ProgressDialog(JoinActivity.this);
-		pDialog.setMessage("Starting Game. Please wait...");
-		pDialog.setIndeterminate(false);
-		pDialog.setCancelable(false);
-		pDialog.show();
-	}
-
-	/**
-	 * getting All products from url
-	 * */
-	protected String doInBackground(String... args) {
-	
-		List<NameValuePair> params2 = new ArrayList<NameValuePair>();
-		
-		params2.add(new BasicNameValuePair("gamenumber","game"+pid)); //add player to red or blue
-		params2.add(new BasicNameValuePair("pid",pid)); //add player to red or blue
-
-		JSONObject json = jsonParser.makeHttpRequest(url_start_game,
-				"POST", params2);
+		// getting JSON string from URL
+		JSONObject json = jParser.makeHttpRequest(url_update_delete_gameinfo, "POST", params);
 
 
-		// check log cat fro response
-		Log.d("Create Response", json.toString());
+		// Check your log cat for JSON reponse
+		Log.d("All Products: ", json.toString());
 
-		// check for success tag
 		try {
+			// Checking for SUCCESS TAG
 			int success = json.getInt(TAG_SUCCESS);
 
 			if (success == 1) {
+				// products found
+				// Getting Array of Products
+				products = json.getJSONArray(TAG_GAME_INFO);
 
 
-				// closing this screen
-			} else {
+				// looping through All Products
 
-				// failed to create product
+				JSONObject c = products.getJSONObject(0);
+
+
+
+
+
+				// Starting new intent
+
+
+			}
+			else {
+				// failed to update product
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 
-		return null;
-	}
-
-
-
-
-	/**
-	 * After completing background task Dismiss the progress dialog
-	 * **/
-	protected void onPostExecute(String file_url) {
-		// dismiss the dialog after getting all products
-		pDialog.dismiss();
-		// updating UI from Background Thread
-		
-		Intent in = new Intent(JoinActivity.this,
-				GameActivity.class);
-		// sending pid to next activity
-		
-
-
-		// starting new activity and expecting some response back
-		startActivity(in);
 
 	}
+	class StartGame extends AsyncTask<String, String, String> {
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			pDialog = new ProgressDialog(JoinActivity.this);
+			pDialog.setMessage("Starting Game. Please wait...");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(false);
+			pDialog.show();
+		}
+
+		/**
+		 * getting All products from url
+		 * */
+		protected String doInBackground(String... args) {
+
+			List<NameValuePair> params2 = new ArrayList<NameValuePair>();
+
+			params2.add(new BasicNameValuePair("gamenumber","game"+pid)); //add player to red or blue
+			params2.add(new BasicNameValuePair("pid",pid)); //add player to red or blue
+
+			JSONObject json = jsonParser.makeHttpRequest(url_start_game,
+					"POST", params2);
 
 
-	
-}
+			// check log cat fro response
+			Log.d("Create Response", json.toString());
 
-@Override
-public void onClick(View v) {
-	if(v.getId() == R.id.startButton){
-		
+			// check for success tag
+			try {
+				int success = json.getInt(TAG_SUCCESS);
 
-		new StartGame().execute();
-
+				if (success == 1) {
 
 
-		// updating UI from Background Thread
-		//servername.setText(gamepid);
+					// closing this screen
+				} else {
+
+					// failed to create product
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+
+
+
+		/**
+		 * After completing background task Dismiss the progress dialog
+		 * **/
+		protected void onPostExecute(String file_url) {
+			// dismiss the dialog after getting all products
+			pDialog.dismiss();
+			// updating UI from Background Thread
+
+			Intent in = new Intent(JoinActivity.this,
+					GameActivity.class);
+			in.putExtra("player", player );
+			// sending pid to next activity
+
+
+
+			// starting new activity and expecting some response back
+			startActivity(in);
+
+		}
+
 
 
 	}
-}
+
+	@Override
+	public void onClick(View v) {
+		if(v.getId() == R.id.startButton){
+
+
+			new StartGame().execute();
+
+
+
+			// updating UI from Background Thread
+			//servername.setText(gamepid);
+
+
+		}
+	}
 }
 

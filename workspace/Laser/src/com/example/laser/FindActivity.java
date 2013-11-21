@@ -19,6 +19,7 @@ import com.example.laser.JoinActivity.LoadPlayers;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -75,6 +76,7 @@ public class FindActivity extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.find_game);
 
 		// Hashmap for ListView
@@ -436,9 +438,9 @@ public class FindActivity extends ListActivity {
 						// if blue equals red, then pick a random color
 						/*
 						if(blue == red){
-							
+
 						}
-						*/
+						 */
 						else{
 							player.setTeam("Red");
 						}
