@@ -152,9 +152,9 @@ public class JoinActivity extends Activity implements OnClickListener {
 		currentPlayers = bundle.getString("current_players");
 		//String player = bundle.getString("player1");
 		GameMode = bundle.getString("gamemode");
-		JoinTitle = (TextView)findViewById(R.id.JoinTitle);
-		JoinTitle.setText(GameMode);
-		JoinTitle.setTextColor(Color.RED);
+		//JoinTitle = (TextView)findViewById(R.id.JoinTitle);
+		//JoinTitle.setText(GameMode);
+		//JoinTitle.setTextColor(Color.RED);
 		player1 = (TextView)findViewById(R.id.TextView001);
 		player1.setTextColor(Color.RED);
 		player2 = (TextView)findViewById(R.id.TextView002);

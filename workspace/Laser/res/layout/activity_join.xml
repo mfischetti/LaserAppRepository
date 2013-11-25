@@ -23,70 +23,63 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:gravity="center_vertical|left"
         android:orientation="vertical" >
 
         <TextView
             android:id="@+id/TextView001"
-            android:layout_width="match_parent"
+            android:layout_width="102dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="23dp"
-            android:gravity="center"
+            android:gravity="center_vertical|center"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/TextView002"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="23dp"
-            android:gravity="center"
+            android:gravity="center_vertical|center"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/TextView003"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="23dp"
-            android:gravity="center"
+            android:gravity="center_vertical|center"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/TextView004"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="23dp"
-            android:gravity="center"
+            android:gravity="center_vertical|center"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/TextView005"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="23dp"
-            android:gravity="center"
+            android:gravity="center_vertical|center"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/TextView006"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="23dp"
-            android:gravity="center"
+            android:gravity="center_vertical|center"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/TextView007"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="23dp"
-            android:gravity="center"
+            android:gravity="center_vertical|center"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/TextView008"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="23dp"
-            android:gravity="center"
+            android:gravity="center_vertical|center"
             android:textSize="20sp" />
     </LinearLayout>
 
