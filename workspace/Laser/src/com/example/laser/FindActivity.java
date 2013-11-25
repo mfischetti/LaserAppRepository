@@ -24,6 +24,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -229,6 +230,20 @@ Timer timer;
 		timer.schedule(doAsynchronousTask, 0, 1000); //execute in every 1000 ms
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+			timer.cancel();
+		
+			//player.earseAll();
+
+			Intent in = new Intent(getApplicationContext(),
+					MainActivity.class);
+			// starting new activity and expecting some response back
+			startActivity(in);	    
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 
 	/**
 	 * Background Async Task to Load all product by making HTTP Request

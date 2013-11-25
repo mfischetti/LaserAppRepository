@@ -28,7 +28,9 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,6 +40,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class JoinActivity extends Activity implements OnClickListener {
@@ -124,18 +127,22 @@ public class JoinActivity extends Activity implements OnClickListener {
 	ArrayList<String> AllPlayersTemp = new ArrayList<String>();		
 
 	Timer timer;
+	Drawable back;
+	Resources res;
+	
 
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		res = getResources();
 		setContentView(R.layout.activity_join);
 		Bundle bundle = getIntent().getExtras();
-
+	
 		// 2. get person object from intent
 		player = (Player) getIntent().getSerializableExtra("player");
-
 
 
 
@@ -157,7 +164,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 		player4 = (TextView)findViewById(R.id.TextView004);
 		player4.setTextColor(Color.GREEN);
 		player5 = (TextView)findViewById(R.id.TextView005);
-		player5.setTextColor(Color.YELLOW);
+		player5.setTextColor(Color.DKGRAY);
 		player6 = (TextView)findViewById(R.id.TextView006);
 		player6.setTextColor(Color.MAGENTA);
 		player7 = (TextView)findViewById(R.id.TextView007);
@@ -184,8 +191,20 @@ public class JoinActivity extends Activity implements OnClickListener {
 		//this is how you get it so it doesnt crash
 		player.setName(getName(player.getPlayerID()+""));
 		GetCurrentPlayers();
+		View view = this.findViewById(R.id.joinLayout);
 
+		if(GameMode.charAt(0) == 'F'){
+			//back = res.getDrawable(R.drawable.freeforallback); 
+			view.setBackgroundResource(R.drawable.freeforallback);
 
+		}
+		else{
+			//back = res.getDrawable(R.drawable.joinggamebackground); 
+			view.setBackgroundResource(R.drawable.joinggamebackground);
+
+		}
+		
+		
 
 
 
@@ -247,7 +266,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 				});
 			}
 		};
-		timer.schedule(doAsynchronousTask, 0, 1000); //execute in every 1000 ms
+		timer.schedule(doAsynchronousTask, 0, 5000); //execute in every 1000 ms
 	}
 
 
@@ -388,14 +407,14 @@ public class JoinActivity extends Activity implements OnClickListener {
 		protected void onPostExecute(String file_url) {
 
 			if (GameMode.charAt(0) == 'F'){
-				player1.setText(AllPlayers.get(0));
-				player2.setText(AllPlayers.get(1));
-				player3.setText(AllPlayers.get(2));
-				player4.setText(AllPlayers.get(3));
-				player5.setText(AllPlayers.get(4));
-				player6.setText(AllPlayers.get(5));
-				player7.setText(AllPlayers.get(6));
-				player8.setText(AllPlayers.get(7));
+				player1.setText(getName(AllPlayers.get(0)));
+				player2.setText(getName(AllPlayers.get(1)));
+				player3.setText(getName(AllPlayers.get(2)));
+				player4.setText(getName(AllPlayers.get(3)));
+				player5.setText(getName(AllPlayers.get(4)));
+				player6.setText(getName(AllPlayers.get(5)));
+				player7.setText(getName(AllPlayers.get(6)));
+				player8.setText(getName(AllPlayers.get(7)));
 			}
 			if (GameMode.charAt(0) == 'T'){
 				setDisplay();
@@ -504,6 +523,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+			timer.cancel();
 			GetCurrentPlayers();
 			UpdateCurrentPlayers();
 			updateGameInfo();
