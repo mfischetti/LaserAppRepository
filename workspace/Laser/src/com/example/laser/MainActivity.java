@@ -59,6 +59,10 @@ public class MainActivity extends Activity implements OnClickListener {
 			StartHelp();
 		}
 	}
+	@Override
+	public void onBackPressed(){
+		
+	}
 
 
 	private void StartHelp() {

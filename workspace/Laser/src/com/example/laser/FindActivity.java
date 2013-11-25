@@ -36,7 +36,7 @@ public class FindActivity extends ListActivity {
 	Player player;
 	// Progress Dialog
 	private ProgressDialog pDialog;
-
+Timer timer;
 	// Creating JSON Parser object
 	JSONParser jParser = new JSONParser();
 	JSONParser jsonParser = new JSONParser();
@@ -209,7 +209,7 @@ public class FindActivity extends ListActivity {
 
 	public void callAsynchronousTask() {
 		final Handler handler = new Handler();
-		Timer timer = new Timer();
+		timer = new Timer();
 		TimerTask doAsynchronousTask = new TimerTask() {       
 			@Override
 			public void run() {
@@ -578,7 +578,7 @@ public class FindActivity extends ListActivity {
 			in.putExtra("player1", ""+left);
 			in.putExtra("gamemode", GameMode);
 
-
+timer.cancel();
 			// starting new activity and expecting some response back
 			startActivity(in);
 

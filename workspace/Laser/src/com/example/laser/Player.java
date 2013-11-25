@@ -17,21 +17,21 @@ public class Player implements Serializable {
 	int[] teamMembers;
 	Hashtable<Integer, Integer> playerHit;
 	Hashtable<Integer, Integer> hitByPlayer;
-	
+
 	public Player(int id, int gameID){
 		this.playerID = id;
 		this.gameID = gameID;
 		this.shotsFired = 0;
 		this.hit = 0;
 		this.playerspot = 0;
-		
+
 		playerHit = new Hashtable<Integer, Integer>();
 		hitByPlayer = new Hashtable<Integer, Integer>();
 		for(int i = 1; i<=8; i++){
 			playerHit.put(i, new Integer(0));
 			hitByPlayer.put(i, new Integer(0));
 		}
-		
+
 	}
 	public void playerShoot(){
 		//shoot laser beam
@@ -72,12 +72,18 @@ public class Player implements Serializable {
 	public int getPlayerSpot(){
 		return playerspot;
 	}
-	
+
 	public int getPlayerID(){
 		return playerID;
 	}
 	public int getGameID(){
 		return gameID;
+	}
+	public void setName(String name){
+		 this.playerName = name;
+	}
+	public String getName(){
+		return playerName;
 	}
 	
 	public void earseAll() {
@@ -87,7 +93,7 @@ public class Player implements Serializable {
 		playerspot = 0;
 		team = "";
 	}
-	
-	
-	
+
+
+
 }

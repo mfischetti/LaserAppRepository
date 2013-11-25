@@ -5,43 +5,59 @@ import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
+import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 
 public class GameActivity extends Activity {
 	Player player;
+	Drawable back;
+	Resources res;
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		res = getResources();
+
 		Bundle bundle = getIntent().getExtras();
 		player = (Player) getIntent().getSerializableExtra("player");
-	//	setContentView(R.layout.activity_game);
+		setContentView(R.layout.activity_game);
+
+		//	setContentView(R.layout.activity_game);
 		// Show the Up button in the action bar.
 		if(player.getTeam().matches("Blue")){
-			setContentView(R.layout.activity_game_blue);
-			TextView team = (TextView)findViewById(R.id.textView111);
-			team.setText(player.getTeam());
+			back = res.getDrawable(R.drawable.blue_back); 
+
+
+
 		}
 		else if(player.getTeam().matches("Red")){
-			setContentView(R.layout.activity_game_red);
-			TextView team = (TextView)findViewById(R.id.textView3);
-			team.setText(player.getTeam());
+			back = res.getDrawable(R.drawable.red_back); 
+
 
 
 		}
 		else{
-			setContentView(R.layout.activity_game_neut);
-			TextView team = (TextView)findViewById(R.id.textView2);
-			team.setText(player.getTeam());
+		//	back = res.getDrawable(R.drawable.neut_back); 
 
-
-
+			
 		}
-	}
+		TextView name = (TextView)findViewById(R.id.player_name);
+		name.setText(player.getName());
+		name.setTextColor(Color.WHITE);
 
+		LinearLayout linearLayout =  (LinearLayout)findViewById(R.id.GameLayout); 
+		linearLayout.setBackgroundDrawable(back);
+
+			}
 
 
 

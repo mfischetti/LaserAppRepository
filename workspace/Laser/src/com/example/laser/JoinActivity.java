@@ -123,7 +123,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 	ArrayList<String> AllPlayers = new ArrayList<String>();
 	ArrayList<String> AllPlayersTemp = new ArrayList<String>();		
 
-
+	Timer timer;
 
 
 	@Override
@@ -182,6 +182,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 		team24 = (TextView)findViewById(R.id.team24);
 		team24.setTextColor(Color.RED);
 		//this is how you get it so it doesnt crash
+		player.setName(getName(player.getPlayerID()+""));
 		GetCurrentPlayers();
 
 
@@ -196,12 +197,40 @@ public class JoinActivity extends Activity implements OnClickListener {
 		//new LoadPlayers().execute();
 
 	}
-
+	public String getName(String number) {
+		if (number.charAt(0)=='1'){
+			return "Matt";
+		}
+		if (number.charAt(0)=='2'){
+			return "Mike";
+		}
+		if (number.charAt(0)=='3'){
+			return "Alyssa";
+		}
+		if (number.charAt(0)=='4'){
+			return "Theo";
+		}
+		if (number.charAt(0)=='5'){
+			return "Angelo";
+		}
+		if (number.charAt(0)=='6'){
+			return "Eric";
+		}
+		if (number.charAt(0)=='7'){
+			return "DaveRamos";
+		}
+		if (number.charAt(0)=='8'){
+			return "Jimmer";
+		}
+		else{
+			return "";
+		}
+	}
 
 
 	public void callAsynchronousTask() {
 		final Handler handler = new Handler();
-		Timer timer = new Timer();
+		timer = new Timer();
 		TimerTask doAsynchronousTask = new TimerTask() {       
 			@Override
 			public void run() {
@@ -317,7 +346,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 		}
 
 
-		private String getName(String number) {
+		public String getName(String number) {
 			if (number.charAt(0)=='1'){
 				return "Matt";
 			}
@@ -758,7 +787,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 			in.putExtra("player", player );
 			// sending pid to next activity
 
-
+			timer.cancel();
 
 			// starting new activity and expecting some response back
 			startActivity(in);
