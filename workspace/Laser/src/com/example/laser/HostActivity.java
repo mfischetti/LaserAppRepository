@@ -44,9 +44,9 @@ public class HostActivity extends Activity implements OnClickListener {
 	private ProgressDialog pDialog;
 	JSONParser jsonParser = new JSONParser();
 
-	private static String url_create_product = "http://laserapp.no-ip.biz/laserDatabase/android_connect/create_product.php";
-	private static String url_all_products = "http://laserapp.no-ip.biz/laserDatabase/android_connect/get_all_products.php";
-	private static String url_post_gameinfo = "http://laserapp.no-ip.biz/laserDatabase/android_connect/create_game_info.php";
+	private static String url_create_product = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/create_product.php";
+	private static String url_all_products = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/get_all_products.php";
+	private static String url_post_gameinfo = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/create_game_info.php";
 	Player player;
 	//10.0.0.16
 	//udel - 128.4.202.239

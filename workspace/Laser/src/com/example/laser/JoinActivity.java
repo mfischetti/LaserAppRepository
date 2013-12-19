@@ -65,13 +65,14 @@ public class JoinActivity extends Activity implements OnClickListener {
 
 
 	// single product url
-	private static String url_get_gameinfo = "http://laserapp.no-ip.biz/laserDatabase/android_connect/get_game_info.php";
+	private static String url_get_gameinfo = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/get_game_info.php";
 	// url to update product
-	private static String url_update_game =  "http://laserapp.no-ip.biz/laserDatabase/android_connect/update_game.php";
-	private static String url_update_player = "http://laserapp.no-ip.biz/laserDatabase/android_connect/add_player.php";
-	private static String url_get_game = "http://laserapp.no-ip.biz/laserDatabase/android_connect/get_game.php";
-	private static String url_update_delete_gameinfo = "http://laserapp.no-ip.biz/laserDatabase/android_connect/delete_update_game_info.php";
-	private static String url_start_game = "http://laserapp.no-ip.biz/laserDatabase/android_connect/create_started_game.php";
+	private static String url_update_game =  "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/update_game.php";
+	private static String url_update_player = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/add_player.php";
+	private static String url_get_game = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/get_game.php";
+	private static String url_update_delete_gameinfo = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/delete_update_game_info.php";
+	private static String url_start_game = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/create_started_game.php";
+	private static String url_erase_game = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/erase_game.php";
 	// url to delete product
 
 
@@ -527,6 +528,9 @@ public class JoinActivity extends Activity implements OnClickListener {
 			GetCurrentPlayers();
 			UpdateCurrentPlayers();
 			updateGameInfo();
+			if (newCurrentPlayers == 0){
+				EraseGame();
+			}
 			//player.earseAll();
 
 			Intent in = new Intent(getApplicationContext(),
@@ -536,9 +540,52 @@ public class JoinActivity extends Activity implements OnClickListener {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	/**
-	 * Background Async Task to  Save product Details
-	 * */
+
+	private void EraseGame() {	//first get the current players
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("game_id", pid));
+
+		// getting JSON string from URL
+		JSONObject json = jParser.makeHttpRequest(url_erase_game, "POST", params);
+
+
+		// Check your log cat for JSON reponse
+		Log.d("All Products: ", json.toString());
+
+		try {
+			// Checking for SUCCESS TAG
+			int success = json.getInt(TAG_SUCCESS);
+
+			if (success == 1) {
+				// products found
+				// Getting Array of Products
+				products = json.getJSONArray(TAG_GAMES);
+
+
+				// looping through All Products
+
+				JSONObject c = products.getJSONObject(0);
+
+				// Storing each json item in variable
+				tempCurrentPlayers = c.getString("current_players");
+
+
+
+
+				// Starting new intent
+
+
+			}
+			else {
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		//Process char
+
+	}
+	
 	private void GetCurrentPlayers() {	//first get the current players
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("game_id", pid));
