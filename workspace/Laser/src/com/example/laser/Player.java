@@ -15,6 +15,7 @@ public class Player implements Serializable {
 	int hit;
 	String team;
 	int[] teamMembers;
+	String Ready;
 	Hashtable<Integer, Integer> playerHit;
 	Hashtable<Integer, Integer> hitByPlayer;
 
@@ -69,12 +70,18 @@ public class Player implements Serializable {
 	public String getTeam(){
 		return team;
 	}
+	public void setReady(String ready){
+		this.Ready = ready;
+	}
 	public int getPlayerSpot(){
 		return playerspot;
 	}
 
 	public int getPlayerID(){
 		return playerID;
+	}
+	public String getReady(){
+		return Ready;
 	}
 	public int getGameID(){
 		return gameID;

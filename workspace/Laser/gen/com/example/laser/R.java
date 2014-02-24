@@ -31,6 +31,7 @@ public final class R {
         public static final int logo=0x7f020007;
         public static final int red_back=0x7f020008;
         public static final int redteam=0x7f020009;
+        public static final int world=0x7f02000a;
     }
     public static final class id {
         public static final int GameLayout=0x7f080001;
@@ -45,6 +46,8 @@ public final class R {
         public static final int TextView008=0x7f08001c;
         public static final int action_settings=0x7f08002f;
         public static final int buttonhost=0x7f080010;
+        public static final int count1=0x7f080011;
+        public static final int counter2=0x7f080004;
         public static final int current_players=0x7f08002e;
         public static final int find=0x7f08002a;
         public static final int findtitle=0x7f080000;
@@ -55,6 +58,7 @@ public final class R {
         public static final int linearLayout1=0x7f080014;
         public static final int linearLayout2=0x7f080022;
         public static final int linearLayout3=0x7f08001d;
+        public static final int loadingtitle=0x7f080012;
         public static final int name1=0x7f080007;
         public static final int password1=0x7f08000b;
         public static final int passwordname=0x7f080008;
@@ -66,7 +70,6 @@ public final class R {
         public static final int radio1=0x7f08000f;
         public static final int radioGroup1=0x7f08000d;
         public static final int scrollView1=0x7f080028;
-        public static final int send=0x7f080012;
         public static final int servername=0x7f080006;
         public static final int startButton=0x7f080027;
         public static final int team11=0x7f080023;
@@ -78,9 +81,7 @@ public final class R {
         public static final int team23=0x7f080020;
         public static final int team24=0x7f080021;
         public static final int textView111=0x7f080003;
-        public static final int textView2=0x7f080004;
         public static final int textView3=0x7f080005;
-        public static final int textout=0x7f080011;
     }
     public static final class layout {
         public static final int activity_find=0x7f030000;

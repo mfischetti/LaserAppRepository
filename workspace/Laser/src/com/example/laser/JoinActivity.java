@@ -55,6 +55,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 	String pid;
 	String currentPlayers;
 
+
 	// Progress Dialog
 	private ProgressDialog pDialog;
 
@@ -73,6 +74,8 @@ public class JoinActivity extends Activity implements OnClickListener {
 	private static String url_update_delete_gameinfo = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/delete_update_game_info.php";
 	private static String url_start_game = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/create_started_game.php";
 	private static String url_erase_game = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/erase_game.php";
+	private static String url_update_ready = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/update_ready_gameinfo.php";
+	private static String url_update_time = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/update_gameinfo_time.php";
 	// url to delete product
 
 
@@ -82,24 +85,8 @@ public class JoinActivity extends Activity implements OnClickListener {
 	private static final String TAG_GAMES = "games";
 	private static final String TAG_PID = "game_id";
 	private static final String TAG_CURRENT_PLAYERS = "current_players";
-	private static String play1 = "";
-	private static String play2 = "";
-	private static String play3 = "";
-	private static String play4 = "";
-	private static String play5 = "";
-	private static String play6 = "";
-	private static String play7 = "";
-	private static String play8 = "";
-	private static String color1 = "";
-	private static String color2 = "";
-	private static String color3 = "";
-	private static String color4 = "";
-	private static String color5 = "";
-	private static String color6 = "";
-	private static String color7 = "";
-	private static String color8 = "";
 	String tempCurrentPlayers = "";
-
+	String MaxPlayers = "";
 	boolean temp = true;
 	TextView JoinTitle;
 	TextView player1;
@@ -125,12 +112,13 @@ public class JoinActivity extends Activity implements OnClickListener {
 	Player player;
 	ArrayList<String> AllColors = new ArrayList<String>();		
 	ArrayList<String> AllPlayers = new ArrayList<String>();
-	ArrayList<String> AllPlayersTemp = new ArrayList<String>();		
+	ArrayList<String> AllReady = new ArrayList<String>();		
 
 	Timer timer;
 	Drawable back;
 	Resources res;
-	
+
+	long time;
 
 
 	@SuppressWarnings("deprecation")
@@ -141,7 +129,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 		res = getResources();
 		setContentView(R.layout.activity_join);
 		Bundle bundle = getIntent().getExtras();
-	
+
 		// 2. get person object from intent
 		player = (Player) getIntent().getSerializableExtra("player");
 
@@ -204,8 +192,8 @@ public class JoinActivity extends Activity implements OnClickListener {
 			view.setBackgroundResource(R.drawable.joinggamebackground);
 
 		}
-		
-		
+
+
 
 
 
@@ -237,7 +225,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 			return "Eric";
 		}
 		if (number.charAt(0)=='7'){
-			return "DaveRamos";
+			return "DR";
 		}
 		if (number.charAt(0)=='8'){
 			return "Jimmer";
@@ -299,6 +287,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 
 			AllPlayers.clear();
 			AllColors.clear();
+			AllReady.clear();
 			// Building Parameters
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("game_id", pid));
@@ -341,6 +330,15 @@ public class JoinActivity extends Activity implements OnClickListener {
 					AllColors.add(c.getString("player6Team"));
 					AllColors.add(c.getString("player7Team"));
 					AllColors.add(c.getString("player8Team"));
+					AllReady.add(c.getString("player1Ready"));
+					AllReady.add(c.getString("player2Ready"));
+					AllReady.add(c.getString("player3Ready"));
+					AllReady.add(c.getString("player4Ready"));
+					AllReady.add(c.getString("player5Ready"));
+					AllReady.add(c.getString("player6Ready"));
+					AllReady.add(c.getString("player7Ready"));
+					AllReady.add(c.getString("player8Ready"));
+					time =  Long.valueOf(c.getString("time"));
 					//updates the player spot if a player quits
 
 					if (Integer.parseInt(AllPlayers.get((player.getPlayerSpot()-1))) != player.getPlayerID()){
@@ -349,6 +347,27 @@ public class JoinActivity extends Activity implements OnClickListener {
 								player.setPlayerSpot(i+1);
 							}
 						}
+					}
+					if (time != 0){
+						timer.cancel();
+						int countdown = (int) (time - System.currentTimeMillis());
+						countdown = countdown - 3000;
+						try {
+							Thread.sleep(countdown);
+
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+
+						Intent in = new Intent(JoinActivity.this,
+								HostServerActivity.class);
+						in.putExtra("player", player );
+						// sending pid to next activity
+
+
+						// starting new activity and expecting some response back
+						startActivity(in);
+
 					}
 
 					// Starting new intent
@@ -386,7 +405,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 				return "Eric";
 			}
 			if (number.charAt(0)=='7'){
-				return "DaveRamos";
+				return "DR";
 			}
 			if (number.charAt(0)=='8'){
 				return "Jimmer";
@@ -585,7 +604,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 		//Process char
 
 	}
-	
+
 	private void GetCurrentPlayers() {	//first get the current players
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("game_id", pid));
@@ -613,7 +632,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 
 				// Storing each json item in variable
 				tempCurrentPlayers = c.getString("current_players");
-
+				MaxPlayers= c.getString("max_players");
 
 
 
@@ -682,73 +701,85 @@ public class JoinActivity extends Activity implements OnClickListener {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		AllPlayers.remove((player.getPlayerSpot()-1));
 		AllColors.remove((player.getPlayerSpot()-1));
+		AllReady.remove((player.getPlayerSpot()-1));
 		params.add(new BasicNameValuePair("game_id", pid));
 
 		if (AllPlayers.size()>= 1){
 			params.add(new BasicNameValuePair("player1", AllPlayers.get(0).toString()));
 			params.add(new BasicNameValuePair("playerTeam1", AllColors.get(0).toString()));
+			params.add(new BasicNameValuePair("player1Ready", AllReady.get(0).toString()));
+
 		}
 		else{
 			params.add(new BasicNameValuePair("player1", "0"));
 			params.add(new BasicNameValuePair("playerTeam1", ""));
-
+			params.add(new BasicNameValuePair("player1Ready", ""));
 		}
 		if (AllPlayers.size()>= 2){
 			params.add(new BasicNameValuePair("player2", AllPlayers.get(1).toString()));
 			params.add(new BasicNameValuePair("playerTeam2", AllColors.get(1).toString()));
+			params.add(new BasicNameValuePair("player2Ready", AllReady.get(1).toString()));
+
 
 		}
 		else{
 			params.add(new BasicNameValuePair("player2", "0"));
 			params.add(new BasicNameValuePair("playerTeam2", ""));
+			params.add(new BasicNameValuePair("player2Ready", ""));
+
 
 		}
 		if (AllPlayers.size()>= 3){
 			params.add(new BasicNameValuePair("player3", AllPlayers.get(2).toString()));
 			params.add(new BasicNameValuePair("playerTeam3", AllColors.get(2).toString()));
+			params.add(new BasicNameValuePair("player3Ready", AllReady.get(2).toString()));
 
 		}
 		else{
 			params.add(new BasicNameValuePair("player3", "0"));
 			params.add(new BasicNameValuePair("playerTeam3", ""));
-
+			params.add(new BasicNameValuePair("player3Ready", ""));
 		}
 		if (AllPlayers.size()>= 4){
 			params.add(new BasicNameValuePair("player4", AllPlayers.get(3).toString()));
 			params.add(new BasicNameValuePair("playerTeam4", AllColors.get(3).toString()));
-
+			params.add(new BasicNameValuePair("player4Ready", AllReady.get(3).toString()));
 		}
 		else{
 			params.add(new BasicNameValuePair("player4", "0"));
 			params.add(new BasicNameValuePair("playerTeam4", ""));
+			params.add(new BasicNameValuePair("player4Ready", ""));
 
 		}
 		if (AllPlayers.size()>= 5){
 			params.add(new BasicNameValuePair("player5", AllPlayers.get(4).toString()));
 			params.add(new BasicNameValuePair("playerTeam5", AllColors.get(4).toString()));
+			params.add(new BasicNameValuePair("player5Ready", AllReady.get(4).toString()));
 		}
 		else{
 			params.add(new BasicNameValuePair("player5", "0"));
 			params.add(new BasicNameValuePair("playerTeam5", ""));
-
+			params.add(new BasicNameValuePair("player5Ready", ""));
 		}
 		if (AllPlayers.size()>= 6){
 			params.add(new BasicNameValuePair("player6", AllPlayers.get(5).toString()));
 			params.add(new BasicNameValuePair("playerTeam6", AllColors.get(5).toString()));
+			params.add(new BasicNameValuePair("player6Ready", AllReady.get(5).toString()));
 		}
 		else{
 			params.add(new BasicNameValuePair("player6", "0"));
 			params.add(new BasicNameValuePair("playerTeam6", ""));
+			params.add(new BasicNameValuePair("player6Ready", ""));
 		}
 		if (AllPlayers.size()>= 7){
 			params.add(new BasicNameValuePair("player7", AllPlayers.get(6).toString()));
 			params.add(new BasicNameValuePair("playerTeam7", AllColors.get(6).toString()));
-
+			params.add(new BasicNameValuePair("player7Ready", AllReady.get(6).toString()));
 		}
 		else{
 			params.add(new BasicNameValuePair("player7", "0"));
-			params.add(new BasicNameValuePair("playerTeam1", ""));
-
+			params.add(new BasicNameValuePair("playerTeam7", ""));
+			params.add(new BasicNameValuePair("player7Ready", AllReady.get(6).toString()));
 		}
 
 
@@ -790,77 +821,35 @@ public class JoinActivity extends Activity implements OnClickListener {
 
 
 	}
-	class StartGame extends AsyncTask<String, String, String> {
+	public void StartGame(){
 
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			pDialog = new ProgressDialog(JoinActivity.this);
-			pDialog.setMessage("Starting Game. Please wait...");
-			pDialog.setIndeterminate(false);
-			pDialog.setCancelable(false);
-			pDialog.show();
-		}
+		List<NameValuePair> params2 = new ArrayList<NameValuePair>();
 
-		/**
-		 * getting All products from url
-		 * */
-		protected String doInBackground(String... args) {
+		params2.add(new BasicNameValuePair("gamenumber","game"+pid));
+		params2.add(new BasicNameValuePair("pid",pid));
 
-			List<NameValuePair> params2 = new ArrayList<NameValuePair>();
-
-			params2.add(new BasicNameValuePair("gamenumber","game"+pid)); //add player to red or blue
-			params2.add(new BasicNameValuePair("pid",pid)); //add player to red or blue
-
-			JSONObject json = jsonParser.makeHttpRequest(url_start_game,
-					"POST", params2);
+		JSONObject json = jsonParser.makeHttpRequest(url_start_game,
+				"POST", params2);
 
 
-			// check log cat fro response
-			Log.d("Create Response", json.toString());
+		// check log cat fro response
+		Log.d("Create Response", json.toString());
 
-			// check for success tag
-			try {
-				int success = json.getInt(TAG_SUCCESS);
+		// check for success tag
+		try {
+			int success = json.getInt(TAG_SUCCESS);
 
-				if (success == 1) {
+			if (success == 1) {
 
 
-					// closing this screen
-				} else {
+				// closing this screen
+			} else {
 
-					// failed to create product
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
+				// failed to create product
 			}
-
-			return null;
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-
-
-
-
-		/**
-		 * After completing background task Dismiss the progress dialog
-		 * **/
-		protected void onPostExecute(String file_url) {
-			// dismiss the dialog after getting all products
-			pDialog.dismiss();
-			// updating UI from Background Thread
-
-			Intent in = new Intent(JoinActivity.this,
-					GameActivity.class);
-			in.putExtra("player", player );
-			// sending pid to next activity
-
-			timer.cancel();
-
-			// starting new activity and expecting some response back
-			startActivity(in);
-
-		}
-
 
 
 	}
@@ -868,9 +857,29 @@ public class JoinActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		if(v.getId() == R.id.startButton){
-
-
-			new StartGame().execute();
+			try {
+				getReady();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			int counter = 0;
+			if(player.getReady() != "Yes"){
+				for (int j = 0; j<AllReady.size(); j++){
+					if (AllReady.get(j).contains("Yes")){
+						counter++;
+					}
+				}
+				if (counter+1 == Integer.parseInt(MaxPlayers)){
+					setReady();
+					StartGame();
+					setTime();
+					//new StartGame().execute();
+				}
+				else{
+					setReady();
+				}
+			}
 
 
 
@@ -879,6 +888,123 @@ public class JoinActivity extends Activity implements OnClickListener {
 
 
 		}
+	}
+	private void getReady() throws JSONException {
+		AllReady.clear();
+		// Building Parameters
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("game_id", pid));
+
+		// getting JSON string from URL
+		JSONObject json = jParser.makeHttpRequest(url_get_gameinfo, "GET", params);
+
+
+		// Check your log cat for JSON reponse
+		Log.d("All Products: ", json.toString());
+
+			// Checking for SUCCESS TAG
+			int success = json.getInt(TAG_SUCCESS);
+
+			if (success == 1) {
+				// products found
+				// Getting Array of Products
+				products = json.getJSONArray(TAG_GAME_INFO);
+
+
+				// looping through All Products
+
+				JSONObject c = products.getJSONObject(0);
+				AllReady.clear();
+				
+				AllReady.add(c.getString("player1Ready"));
+				AllReady.add(c.getString("player2Ready"));
+				AllReady.add(c.getString("player3Ready"));
+				AllReady.add(c.getString("player4Ready"));
+				AllReady.add(c.getString("player5Ready"));
+				AllReady.add(c.getString("player6Ready"));
+				AllReady.add(c.getString("player7Ready"));
+				AllReady.add(c.getString("player8Ready"));
+			}
+
+	}
+	//NEED TO CHANGE!
+	private void setTime(){
+		// Building Parameters
+		time = System.currentTimeMillis()+8000;
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("game_id", pid));
+		params.add(new BasicNameValuePair("time", time+""));
+
+		// getting JSON string from URL
+		JSONObject json = jParser.makeHttpRequest(url_update_time, "POST", params);
+
+
+		// Check your log cat for JSON reponse
+		Log.d("All Products: ", json.toString());
+
+		try {
+			// Checking for SUCCESS TAG
+			int success = json.getInt(TAG_SUCCESS);
+
+			if (success == 1) {
+				// products found
+				// Getting Array of Products
+				products = json.getJSONArray(TAG_GAMES);
+
+
+				// looping through All Products
+
+				JSONObject c = products.getJSONObject(0);
+
+
+			}
+			else {
+				// failed to update product
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+
+	}
+	private void setReady(){
+		// Building Parameters
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("game_id", pid));
+		params.add(new BasicNameValuePair("playerid", player.getPlayerSpot()+""));
+
+		// getting JSON string from URL
+		JSONObject json = jParser.makeHttpRequest(url_update_ready, "POST", params);
+
+
+		// Check your log cat for JSON reponse
+		Log.d("All Products: ", json.toString());
+
+		try {
+			// Checking for SUCCESS TAG
+			int success = json.getInt(TAG_SUCCESS);
+
+			if (success == 1) {
+				// products found
+				// Getting Array of Products
+				products = json.getJSONArray(TAG_GAMES);
+
+
+				// looping through All Products
+
+				JSONObject c = products.getJSONObject(0);
+
+
+			}
+			else {
+				// failed to update product
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		player.setReady("Yes");
+
+
 	}
 }
 
