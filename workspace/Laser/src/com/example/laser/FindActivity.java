@@ -585,7 +585,7 @@ Timer timer;
 			player.setPlayerSpot(left);
 
 			Intent in = new Intent(FindActivity.this,
-					JoinActivity.class);
+					BluetoothActivity.class);
 			// sending pid to next activity
 			in.putExtra("player", player);
 			in.putExtra("gamepid", pickedpid);

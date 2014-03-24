@@ -185,13 +185,13 @@ public class JoinActivity extends Activity implements OnClickListener {
 		if(GameMode.charAt(0) == 'F'){
 			//back = res.getDrawable(R.drawable.freeforallback); 
 			view.setBackgroundResource(R.drawable.freeforallback);
-
 		}
 		else{
 			//back = res.getDrawable(R.drawable.joinggamebackground); 
 			view.setBackgroundResource(R.drawable.joinggamebackground);
-			JoinTitle.setText(player.getBluetoothMac());
-
+			JoinTitle.setText("Team");
+			JoinTitle.setTextSize(50);
+			JoinTitle.setTextColor(Color.WHITE);
 		}
 
 
@@ -429,13 +429,37 @@ public class JoinActivity extends Activity implements OnClickListener {
 
 			if (GameMode.charAt(0) == 'F'){
 				player1.setText(getName(AllPlayers.get(0)));
+				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(0))){
+					player1.setBackgroundColor(Color.YELLOW);
+				}
 				player2.setText(getName(AllPlayers.get(1)));
+				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(1))){
+					player2.setBackgroundColor(Color.YELLOW);
+				}
 				player3.setText(getName(AllPlayers.get(2)));
+				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(2))){
+					player3.setBackgroundColor(Color.YELLOW);
+				}
 				player4.setText(getName(AllPlayers.get(3)));
+				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(3))){
+					player4.setBackgroundColor(Color.YELLOW);
+				}
 				player5.setText(getName(AllPlayers.get(4)));
+				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(4))){
+					player5.setBackgroundColor(Color.YELLOW);
+				}
 				player6.setText(getName(AllPlayers.get(5)));
+				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(5))){
+					player6.setBackgroundColor(Color.YELLOW);
+				}
 				player7.setText(getName(AllPlayers.get(6)));
+				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(6))){
+					player7.setBackgroundColor(Color.YELLOW);
+				}
 				player8.setText(getName(AllPlayers.get(7)));
+				if(player.getPlayerID() == Integer.parseInt(AllPlayers.get(7))){
+					player8.setBackgroundColor(Color.YELLOW);
+				}
 			}
 			if (GameMode.charAt(0) == 'T'){
 				setDisplay();
