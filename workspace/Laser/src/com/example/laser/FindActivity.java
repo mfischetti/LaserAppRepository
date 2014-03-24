@@ -592,8 +592,7 @@ Timer timer;
 			in.putExtra("current_players", Micheal);
 			in.putExtra("player1", ""+left);
 			in.putExtra("gamemode", GameMode);
-
-timer.cancel();
+			timer.cancel();
 			// starting new activity and expecting some response back
 			startActivity(in);
 

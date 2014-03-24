@@ -10,5 +10,6 @@
     <string name="title_activity_host_server">HostServerActivity</string>
     <string name="title_activity_join">JoinActivity</string>
     <string name="title_activity_game">GameActivity</string>
+    <string name="title_activity_bluetooth">BluetoothActivity</string>
 
 </resources>

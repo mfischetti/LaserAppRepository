@@ -13,6 +13,7 @@ public class Player implements Serializable {
 	int yLoc;
 	int shotsFired;
 	int hit;
+	String BluetoothMac;
 	String team;
 	int[] teamMembers;
 	String Ready;
@@ -25,6 +26,7 @@ public class Player implements Serializable {
 		this.shotsFired = 0;
 		this.hit = 0;
 		this.playerspot = 0;
+		this.BluetoothMac = null;
 
 		playerHit = new Hashtable<Integer, Integer>();
 		hitByPlayer = new Hashtable<Integer, Integer>();
@@ -64,6 +66,9 @@ public class Player implements Serializable {
 	public void setPlayerSpot(int num){
 		this.playerspot = num;
 	}
+	public void setBluetoothMac(String mac){
+		this.BluetoothMac = mac;
+	}
 	public void setTeam(String team){
 		this.team = team;
 	}
@@ -85,6 +90,9 @@ public class Player implements Serializable {
 	}
 	public int getGameID(){
 		return gameID;
+	}
+	public String getBluetoothMac(){
+		return BluetoothMac;
 	}
 	public void setName(String name){
 		 this.playerName = name;

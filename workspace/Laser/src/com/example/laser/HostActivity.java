@@ -385,7 +385,7 @@ public class HostActivity extends Activity implements OnClickListener {
 			pDialog.dismiss();
 			// Starting new intent
 			Intent in = new Intent(getApplicationContext(),
-					JoinActivity.class);
+					BluetoothActivity.class);
 			// sending pid to next activity
 			in.putExtra("player", player);
 			in.putExtra("gamepid", gamepid);

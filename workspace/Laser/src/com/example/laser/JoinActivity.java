@@ -141,7 +141,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 		currentPlayers = bundle.getString("current_players");
 		//String player = bundle.getString("player1");
 		GameMode = bundle.getString("gamemode");
-		//JoinTitle = (TextView)findViewById(R.id.JoinTitle);
+		JoinTitle = (TextView)findViewById(R.id.JoinTitle);
 		//JoinTitle.setText(GameMode);
 		//JoinTitle.setTextColor(Color.RED);
 		player1 = (TextView)findViewById(R.id.TextView001);
@@ -190,6 +190,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 		else{
 			//back = res.getDrawable(R.drawable.joinggamebackground); 
 			view.setBackgroundResource(R.drawable.joinggamebackground);
+			JoinTitle.setText(player.getBluetoothMac());
 
 		}
 
