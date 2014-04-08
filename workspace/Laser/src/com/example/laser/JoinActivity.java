@@ -351,6 +351,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 					}
 					if (time != 0){
 						timer.cancel();
+						/*
 						int countdown = (int) (time - System.currentTimeMillis());
 						countdown = countdown - 3000;
 						try {
@@ -359,9 +360,9 @@ public class JoinActivity extends Activity implements OnClickListener {
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
-
+						*/
 						Intent in = new Intent(JoinActivity.this,
-								HostServerActivity.class);
+								GameActivity.class);
 						in.putExtra("player", player );
 						// sending pid to next activity
 

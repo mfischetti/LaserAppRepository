@@ -21,6 +21,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Build;
 
 public class BluetoothActivity extends Activity {
@@ -45,6 +46,7 @@ public class BluetoothActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.activity_bluetooth);
 		Bundle bundle = getIntent().getExtras();
 		pid = bundle.getString("gamepid");
