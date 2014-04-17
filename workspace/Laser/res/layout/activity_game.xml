@@ -9,42 +9,105 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".GameActivity" >
 
-    <Button
-        android:id="@+id/btnOn"
+    <TextView
+        android:id="@+id/playerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="62dp"
-        android:text="on" />
-
-    <Button
-        android:id="@+id/btnOff"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/btnOn"
-        android:layout_below="@+id/btnOn"
-        android:layout_marginTop="42dp"
-        android:text="off" />
+        android:text="Large Text"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/txtArduino"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/btnOff"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="96dp"
+        android:layout_alignLeft="@+id/playerName"
+        android:layout_below="@+id/playerName"
+        android:layout_marginTop="14dp"
         android:text="TextView" />
 
-    <EditText
-        android:id="@+id/write"
+    <TextView
+        android:id="@+id/BlueScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnOff"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="28dp"
-        android:ems="10" >
+        android:layout_above="@+id/txtArduino"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="47dp"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <requestFocus />
-    </EditText>
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/BlueScore"
+        android:layout_below="@+id/txtArduino"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/Blue1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/Blue2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/Blue3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/Blue4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/RedScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/txtArduino"
+        android:layout_centerHorizontal="true"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/RedScore"
+        android:layout_alignTop="@+id/linearLayout2"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/Red1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/Red2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/Red3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/Red4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+    </LinearLayout>
 
 </RelativeLayout>

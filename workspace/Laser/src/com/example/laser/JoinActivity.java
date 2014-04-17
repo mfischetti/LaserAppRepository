@@ -256,7 +256,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 				});
 			}
 		};
-		timer.schedule(doAsynchronousTask, 0, 5000); //execute in every 1000 ms
+		timer.schedule(doAsynchronousTask, 0, 5000); //execute in every 5000 ms
 	}
 
 
