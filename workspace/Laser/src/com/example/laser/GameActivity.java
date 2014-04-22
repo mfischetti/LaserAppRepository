@@ -53,6 +53,10 @@ public class GameActivity extends Activity {
 	JSONParser jsonParser = new JSONParser();
 	ArrayList<HashMap<String, String>> productsList;
 	JSONArray products = null;
+	JSONArray products1 = null;
+	JSONArray products2 = null;
+	JSONArray products3 = null;
+
 
 	ArrayList<GamePlayer> AllPlayerInfo = new ArrayList<GamePlayer>();		
 
@@ -223,7 +227,7 @@ public class GameActivity extends Activity {
 				});
 			}
 		};
-		timer.schedule(doAsynchronousTask, 0, 5000); //execute in every 1000 ms
+		timer.schedule(doAsynchronousTask, 0, 5000); //execute in every 5000 ms
 	}
 	class GetScores extends AsyncTask<String, String, String> {
 
@@ -251,7 +255,7 @@ public class GameActivity extends Activity {
 			AllPlayerInfo.clear();
 
 			// Building Parameters
-			//for(int i = 1; i<9; i++){
+			for(int i = 1; i<9; i++){
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				params.add(new BasicNameValuePair("game_id", "game"+player.getGameID()));
 				params.add(new BasicNameValuePair("num", ""+1));
@@ -272,7 +276,11 @@ public class GameActivity extends Activity {
 						// products found
 						// Getting Array of Products
 						products = json.getJSONArray(TAG_GAME_INFO);
+						products1 = json.getJSONArray("game_info1");
+						products2 = json.getJSONArray("game_info2");
+						products3 = json.getJSONArray("game_info3");
 
+						
 
 						// looping through All Products
 
@@ -283,6 +291,27 @@ public class GameActivity extends Activity {
 								c.getString("Player8"),c.getString("Team"),c.getString("xLoc"),
 								c.getString("yLoc"),c.getString("Score"),getName(c.getString("NameID")));
 						AllPlayerInfo.add(temp);
+						JSONObject c1 = products1.getJSONObject(0);
+						GamePlayer temp1 = new GamePlayer(""+1, c1.getString("Player1"),
+								c1.getString("Player2"),c1.getString("Player3"),c1.getString("Player4"),
+								c1.getString("Player5"),c1.getString("Player6"),c1.getString("Player7"),
+								c1.getString("Player8"),c1.getString("Team"),c1.getString("xLoc"),
+								c1.getString("yLoc"),c1.getString("Score"),getName(c1.getString("NameID")));
+						AllPlayerInfo.add(temp1);
+						JSONObject c2 = products2.getJSONObject(0);
+						GamePlayer temp2 = new GamePlayer(""+1, c2.getString("Player1"),
+								c2.getString("Player2"),c2.getString("Player3"),c2.getString("Player4"),
+								c2.getString("Player5"),c2.getString("Player6"),c2.getString("Player7"),
+								c2.getString("Player8"),c2.getString("Team"),c2.getString("xLoc"),
+								c2.getString("yLoc"),c2.getString("Score"),getName(c2.getString("NameID")));
+						AllPlayerInfo.add(temp2);
+						JSONObject c3 = products3.getJSONObject(0);
+						GamePlayer temp3 = new GamePlayer(""+1, c3.getString("Player1"),
+								c3.getString("Player2"),c3.getString("Player3"),c3.getString("Player4"),
+								c3.getString("Player5"),c3.getString("Player6"),c3.getString("Player7"),
+								c3.getString("Player8"),c3.getString("Team"),c3.getString("xLoc"),
+								c3.getString("yLoc"),c3.getString("Score"),getName(c3.getString("NameID")));
+						AllPlayerInfo.add(temp3);
 
 						// Storing each json item in variable
 
@@ -296,7 +325,7 @@ public class GameActivity extends Activity {
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-			//}
+			}
 			//publishProgress(args);
 
 			return null;
@@ -346,8 +375,8 @@ public class GameActivity extends Activity {
 			
 			int blue = 1;
 			int red = 1;
-			int loop = 0;
-			//for (int loop = 0; loop <8;loop++){
+			//int loop = 0;
+			for (int loop = 0; loop <4;loop++){
 				if (AllPlayerInfo.get(loop).Team.contains("Blue")){
 					if (blue == 1){
 						Blue1.setText(AllPlayerInfo.get(loop).NameID);
@@ -383,7 +412,7 @@ public class GameActivity extends Activity {
 						Red4.setText(AllPlayerInfo.get(loop).NameID);
 						red=1;
 					}
-				//}
+				}
 			}
 			
 
