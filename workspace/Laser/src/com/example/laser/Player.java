@@ -45,7 +45,7 @@ public class Player implements Serializable {
 			teamMembers[i]=ids[i];
 		}
 	}
-	public void gotHit(int playerID){
+	public boolean gotHit(int playerID){
 		boolean teamMate = false;
 		for(int i = 0; i<teamMembers.length; i++){
 			if(teamMembers[i] == playerID){
@@ -55,13 +55,7 @@ public class Player implements Serializable {
 				teamMate = false;
 			}
 		}
-		if(teamMate == false){
-			hit ++;
-			Integer hits = (Integer) hitByPlayer.get(playerID);
-			hits++;
-			hitByPlayer.put(playerID, hits);
-			//update mysql db by calling php with async function
-		}
+		return teamMate;
 	}
 	public void setPlayerSpot(int num){
 		this.playerspot = num;

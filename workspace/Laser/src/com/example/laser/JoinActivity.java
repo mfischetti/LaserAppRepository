@@ -256,7 +256,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 				});
 			}
 		};
-		timer.schedule(doAsynchronousTask, 0, 5000); //execute in every 5000 ms
+		timer.schedule(doAsynchronousTask, 0, 2000); //execute in every 5000 ms
 	}
 
 
@@ -351,6 +351,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 					}
 					if (time != 0){
 						timer.cancel();
+						
 						/*
 						int countdown = (int) (time - System.currentTimeMillis());
 						countdown = countdown - 3000;
@@ -485,6 +486,29 @@ public class JoinActivity extends Activity implements OnClickListener {
 					blue[bluecounter] = i;
 					bluecounter++;
 				}
+			}
+			//SET TEAM MEMBERS
+			if (player.getTeam() == "Blue"){
+				int[] members = new int[4];	
+				members[0] = 0; members[1] = 0; members[2] = 0; members[3] = 0;
+				for (int count = 0; count < 4; count ++){
+					if  (blue[count] != 9){
+						members[count] = blue[count]+1;
+					}
+					
+				}
+				player.setTeamMembers(members);
+			}
+			else if (player.getTeam() == "Red"){
+				int[] members = new int[4];	
+				members[0] = 0; members[1] = 0; members[2] = 0; members[3] = 0;
+				for (int count = 0; count < 4; count ++){
+					if  (red[count] != 9){
+						members[count] = red[count]+1;
+					}
+					
+				}
+				player.setTeamMembers(members);
 			}
 			//SET BLUE TEAM DISPLAY
 			if (blue[0] != 9){

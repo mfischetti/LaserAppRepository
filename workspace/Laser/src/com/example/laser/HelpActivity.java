@@ -42,7 +42,7 @@ public class HelpActivity extends Activity {
  private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
  
  // MAC-address of Bluetooth module (you must edit this line)
- private String address;
+ private String address = "00:13:12:23:43:19";
  	//HC-05: 00:13:12:23:43:19
  	//firefly: 00:12:02:01:03:59
 	//second hc-05: 00:13:12:23:53:43
@@ -55,8 +55,6 @@ public class HelpActivity extends Activity {
  
    setContentView(R.layout.activity_help);
 	Bundle bundle = getIntent().getExtras();
-	player = (Player) getIntent().getSerializableExtra("player");
-	address = player.getBluetoothMac();
  
    btnOn = (Button) findViewById(R.id.btnOn);                  // button LED ON
    btnOff = (Button) findViewById(R.id.btnOff);                // button LED OFF
