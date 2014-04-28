@@ -23,6 +23,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -49,17 +50,17 @@ public class GameActivity extends Activity {
 	JSONParser jParser = new JSONParser();
 	JSONParser jsonParser = new JSONParser();
 	ArrayList<HashMap<String, String>> productsList;
-	
+
 	JSONArray products = null;
 	JSONArray products1 = null;
 	JSONArray products2 = null;
 	JSONArray products3 = null;
-	
+
 	ArrayList<GamePlayer> AllPlayerInfo = new ArrayList<GamePlayer>();		
 	TextView txtArduino, player_name;
 	TextView Blue1, Blue2, Blue3, Blue4;
 	TextView Red1, Red2, Red3, Red4;
-	TextView BlueScore, RedScore;
+	TextView ScoreBlue, ScoreRed;
 	//Button btnOn, btnOff;
 	//TextView txtArduino;
 	//	EditText write;
@@ -84,13 +85,14 @@ public class GameActivity extends Activity {
 	//second hc-05: 00:13:12:23:53:43
 	Drawable back;
 	Resources res;
+	int bluescore, redscore;
 
 	/** Called when the activity is first created. */
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		setContentView(R.layout.activity_game);
 		Bundle bundle = getIntent().getExtras();
 		player = (Player) getIntent().getSerializableExtra("player");
@@ -121,8 +123,8 @@ public class GameActivity extends Activity {
 		Red2 = (TextView) findViewById(R.id.Red2);
 		Red3 = (TextView) findViewById(R.id.Red3);
 		Red4 = (TextView) findViewById(R.id.Red4);
-		BlueScore = (TextView) findViewById(R.id.BlueScore);
-		RedScore = (TextView) findViewById(R.id.RedScore);
+		ScoreBlue = (TextView) findViewById(R.id.BlueScore);
+		ScoreRed = (TextView) findViewById(R.id.RedScore);
 		callAsynchronousTask();
 		h = new Handler() {
 			public void handleMessage(android.os.Message msg) {
@@ -140,7 +142,7 @@ public class GameActivity extends Activity {
 
 		btAdapter = BluetoothAdapter.getDefaultAdapter();       // get Bluetooth adapter
 		checkBTState();
-		
+
 
 		/*btnOn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
@@ -530,7 +532,9 @@ public class GameActivity extends Activity {
 			}
 
 			int blue = 1;
+			bluescore = 0;
 			int red = 1;
+			redscore = 0;
 			//int loop = 0;
 			for (int loop = 0; loop <4;loop++){
 				if (ScoreSort.get(loop).Team.contains("Blue")){
@@ -540,50 +544,62 @@ public class GameActivity extends Activity {
 						Blue3.setText("");
 						Blue4.setText("");
 						blue++;
+						bluescore = bluescore + Integer.parseInt(ScoreSort.get(loop).Score);
 					}
 					else if (blue == 2){
 						Blue2.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
 						Blue3.setText("");
 						Blue4.setText("");
 						blue++;
+						bluescore = bluescore + Integer.parseInt(ScoreSort.get(loop).Score);
+
 					}
 					else if (blue == 3){
 						Blue3.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
 						Blue4.setText("");
 						blue++;
+						bluescore = bluescore + Integer.parseInt(ScoreSort.get(loop).Score);
+
 					}
 					else if (blue == 4){
 						Blue4.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
 						blue= 1;
+						bluescore = bluescore + Integer.parseInt(ScoreSort.get(loop).Score);
 					}
 				}
 
-				else{
+				else if (ScoreSort.get(loop).Team.contains("Red")){
 					if (red == 1){
 						Red1.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
 						Red2.setText("");
 						Red3.setText("");
 						Red4.setText("");
 						red++;
+						redscore = redscore + Integer.parseInt(ScoreSort.get(loop).Score);
 					}
 					else if (red == 2){
 						Red2.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
 						Red3.setText("");
 						Red4.setText("");
 						red++;
+						redscore = redscore + Integer.parseInt(ScoreSort.get(loop).Score);
 					}
 					else if (red == 3){
 						Red3.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
 						Red4.setText("");
 						red++;
+						redscore = redscore + Integer.parseInt(ScoreSort.get(loop).Score);
 					}
 					else if (red == 4){
 						Red4.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
 						red=1;
+						redscore = redscore + Integer.parseInt(ScoreSort.get(loop).Score);
 					}
 				}
 			}
-
+			//update scores here
+			ScoreBlue.setText(bluescore+"");
+			ScoreRed.setText(redscore+"");
 
 		}
 	}
