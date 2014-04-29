@@ -92,7 +92,7 @@ public class GameActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		//this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		setContentView(R.layout.activity_game);
 		Bundle bundle = getIntent().getExtras();
 		player = (Player) getIntent().getSerializableExtra("player");
@@ -132,6 +132,7 @@ public class GameActivity extends Activity {
 				case RECIEVE_MESSAGE:                                                   // if receive massage
 					byte[] readBuf = (byte[]) msg.obj;
 					String strIncom = new String(readBuf, 0, msg.arg1);                 // create string from bytes array
+					Log.d("Recieved", "Recieve a message of: "+strIncom);
 					//	txtArduino.setText(strIncom);
 					UpdateShooter(strIncom);
 					//Log.d(TAG, "...String:"+ sb.toString() +  "Byte:" + msg.arg1 + "...");
@@ -345,6 +346,12 @@ public class GameActivity extends Activity {
 	}
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+			timer.cancel();
+			try {
+				btSocket.close();
+			} catch (IOException e) {
+				errorExit("Fatal Error", "In OnKeyDown() and failed to close socket." + e.getMessage() + ".");	
+			}
 			Intent in = new Intent(getApplicationContext(),
 					MainActivity.class);
 			// starting new activity and expecting some response back
@@ -536,70 +543,73 @@ public class GameActivity extends Activity {
 			int red = 1;
 			redscore = 0;
 			//int loop = 0;
-			for (int loop = 0; loop <4;loop++){
-				if (ScoreSort.get(loop).Team.contains("Blue")){
-					if (blue == 1){
-						Blue1.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
-						Blue2.setText("");
-						Blue3.setText("");
-						Blue4.setText("");
-						blue++;
-						bluescore = bluescore + Integer.parseInt(ScoreSort.get(loop).Score);
-					}
-					else if (blue == 2){
-						Blue2.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
-						Blue3.setText("");
-						Blue4.setText("");
-						blue++;
-						bluescore = bluescore + Integer.parseInt(ScoreSort.get(loop).Score);
+			if (!ScoreSort.isEmpty()){
+				for (int loop = 0; loop <4;loop++){
+					if (ScoreSort.get(loop).Team.contains("Blue")){
+						if (blue == 1){
+							Blue1.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
+							Blue2.setText("");
+							Blue3.setText("");
+							Blue4.setText("");
+							blue++;
+							bluescore = bluescore + Integer.parseInt(ScoreSort.get(loop).Score);
+						}
+						else if (blue == 2){
+							Blue2.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
+							Blue3.setText("");
+							Blue4.setText("");
+							blue++;
+							bluescore = bluescore + Integer.parseInt(ScoreSort.get(loop).Score);
 
-					}
-					else if (blue == 3){
-						Blue3.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
-						Blue4.setText("");
-						blue++;
-						bluescore = bluescore + Integer.parseInt(ScoreSort.get(loop).Score);
+						}
+						else if (blue == 3){
+							Blue3.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
+							Blue4.setText("");
+							blue++;
+							bluescore = bluescore + Integer.parseInt(ScoreSort.get(loop).Score);
 
+						}
+						else if (blue == 4){
+							Blue4.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
+							blue= 1;
+							bluescore = bluescore + Integer.parseInt(ScoreSort.get(loop).Score);
+						}
 					}
-					else if (blue == 4){
-						Blue4.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
-						blue= 1;
-						bluescore = bluescore + Integer.parseInt(ScoreSort.get(loop).Score);
+
+					else if (ScoreSort.get(loop).Team.contains("Red")){
+						if (red == 1){
+							Red1.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
+							Red2.setText("");
+							Red3.setText("");
+							Red4.setText("");
+							red++;
+							redscore = redscore + Integer.parseInt(ScoreSort.get(loop).Score);
+						}
+						else if (red == 2){
+							Red2.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
+							Red3.setText("");
+							Red4.setText("");
+							red++;
+							redscore = redscore + Integer.parseInt(ScoreSort.get(loop).Score);
+						}
+						else if (red == 3){
+							Red3.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
+							Red4.setText("");
+							red++;
+							redscore = redscore + Integer.parseInt(ScoreSort.get(loop).Score);
+						}
+						else if (red == 4){
+							Red4.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
+							red=1;
+							redscore = redscore + Integer.parseInt(ScoreSort.get(loop).Score);
+						}
 					}
 				}
 
-				else if (ScoreSort.get(loop).Team.contains("Red")){
-					if (red == 1){
-						Red1.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
-						Red2.setText("");
-						Red3.setText("");
-						Red4.setText("");
-						red++;
-						redscore = redscore + Integer.parseInt(ScoreSort.get(loop).Score);
-					}
-					else if (red == 2){
-						Red2.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
-						Red3.setText("");
-						Red4.setText("");
-						red++;
-						redscore = redscore + Integer.parseInt(ScoreSort.get(loop).Score);
-					}
-					else if (red == 3){
-						Red3.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
-						Red4.setText("");
-						red++;
-						redscore = redscore + Integer.parseInt(ScoreSort.get(loop).Score);
-					}
-					else if (red == 4){
-						Red4.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
-						red=1;
-						redscore = redscore + Integer.parseInt(ScoreSort.get(loop).Score);
-					}
-				}
+				//update scores here
+				ScoreBlue.setText(bluescore+"");
+				ScoreRed.setText(redscore+"");
 			}
-			//update scores here
-			ScoreBlue.setText(bluescore+"");
-			ScoreRed.setText(redscore+"");
 
 		}
 	}
