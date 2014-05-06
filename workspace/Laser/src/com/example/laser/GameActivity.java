@@ -42,7 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class GameActivity extends Activity {
-	private static final String TAG = "bluetooth2";
+	private static final String TAG = "bluetooth";
 
 	private static String url_update_shooter = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/update_shooter.php";
 	private static String url_get_gamedata = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/get_ingame_info.php";
@@ -57,7 +57,7 @@ public class GameActivity extends Activity {
 	JSONArray products3 = null;
 
 	ArrayList<GamePlayer> AllPlayerInfo = new ArrayList<GamePlayer>();		
-	TextView txtArduino, player_name;
+	TextView game_time, player_name;
 	TextView Blue1, Blue2, Blue3, Blue4;
 	TextView Red1, Red2, Red3, Red4;
 	TextView ScoreBlue, ScoreRed;
@@ -71,7 +71,7 @@ public class GameActivity extends Activity {
 	private BluetoothAdapter btAdapter = null;
 	private BluetoothSocket btSocket = null;
 	private StringBuilder sb = new StringBuilder();
-
+	int gameTime = 600;
 	private ConnectedThread mConnectedThread;
 
 	// SPP UUID service
@@ -112,7 +112,7 @@ public class GameActivity extends Activity {
 
 		//	btnOn = (Button) findViewById(R.id.btnOn);                  // button LED ON
 		//btnOff = (Button) findViewById(R.id.btnOff);                // button LED OFF
-		txtArduino = (TextView) findViewById(R.id.txtArduino);      // for display the received data from the Arduino
+		game_time = (TextView) findViewById(R.id.txtArduino);      // for display the received data from the Arduino
 		//	write = (EditText) findViewById(R.id.write);
 		player_name = (TextView) findViewById(R.id.playerName);      // for display name
 		Blue1 = (TextView) findViewById(R.id.Blue1);
@@ -125,6 +125,7 @@ public class GameActivity extends Activity {
 		Red4 = (TextView) findViewById(R.id.Red4);
 		ScoreBlue = (TextView) findViewById(R.id.BlueScore);
 		ScoreRed = (TextView) findViewById(R.id.RedScore);
+		player_name.setText(player.getName());
 		callAsynchronousTask();
 		h = new Handler() {
 			public void handleMessage(android.os.Message msg) {
@@ -134,8 +135,19 @@ public class GameActivity extends Activity {
 					String strIncom = new String(readBuf, 0, msg.arg1);                 // create string from bytes array
 					Log.d("Recieved", "Recieve a message of: "+strIncom);
 					//	txtArduino.setText(strIncom);
-					UpdateShooter(strIncom);
-					//Log.d(TAG, "...String:"+ sb.toString() +  "Byte:" + msg.arg1 + "...");
+					boolean hit = true;
+					int[] temp = new int[4];
+					temp=player.getTeamMembers();
+					Log.d("Recieved", "team members are: "+temp);
+					for (int i = 0; i < temp.length; i++){
+						if (Integer.parseInt(strIncom)==temp[i]){
+							hit = false;
+						}
+					}
+					if (hit){
+						UpdateShooter(strIncom);
+					}
+					Log.d(TAG, "Shot by:"+ strIncom);
 					break;
 				}
 			};
@@ -378,7 +390,7 @@ public class GameActivity extends Activity {
 				});
 			}
 		};
-		timer.schedule(doAsynchronousTask, 0, 2000); //execute in every 5000 ms
+		timer.schedule(doAsynchronousTask, 0, 1000); //execute in every 5000 ms
 	}
 	class GetScores extends AsyncTask<String, String, String> {
 
@@ -520,30 +532,53 @@ public class GameActivity extends Activity {
 		 * After completing background task Dismiss the progress dialog
 		 * **/
 		protected void onPostExecute(String file_url) {
-			ArrayList<GamePlayer> AllPlayerInfoTemp = new ArrayList<GamePlayer>();
-			AllPlayerInfoTemp.addAll(AllPlayerInfo);
-			ArrayList<GamePlayer> ScoreSort = new ArrayList<GamePlayer>();
-			int highestscore = -1;
-			int position = 0;
-			for (int i = 0; i < AllPlayerInfo.size(); i++){
-				for (int j = 0; j < AllPlayerInfoTemp.size(); j++){
-					if (Integer.parseInt(AllPlayerInfoTemp.get(j).Score) > highestscore){
-						highestscore = Integer.parseInt(AllPlayerInfoTemp.get(j).Score);
-						position = j;
-					}
-				}
-				ScoreSort.add(AllPlayerInfoTemp.get(position));
-				AllPlayerInfoTemp.remove(position);
-				highestscore = -1;
-				position = 0;
+			///////////////////////////////////////////////////////
+			//////////////////GAME TIME////////////////////////////
+			///////////////////////////////////////////////////////
+			int hold_time = gameTime;
+			int mins = hold_time/60;
+			int secs = hold_time % 60;
+			if (secs >= 10){
+				game_time.setText(mins+":"+secs);
 			}
+			else{
+				game_time.setText(mins+":0"+secs);
+			}
+			if (gameTime == 0){
+				//CHANGE ACTIVITYS
+				timer.cancel();
+			}
+			else{
+				gameTime = gameTime - 1;
+			}
+			///////////////////////////////////////////////////////
+			///////////////Score Display///////////////////////////
+			///////////////////////////////////////////////////////
+			if (!AllPlayerInfo.isEmpty()){
+				ArrayList<GamePlayer> AllPlayerInfoTemp = new ArrayList<GamePlayer>();
+				AllPlayerInfoTemp.addAll(AllPlayerInfo);
+				ArrayList<GamePlayer> ScoreSort = new ArrayList<GamePlayer>();
+				int highestscore = -1;
+				int position = 0;
+				for (int i = 0; i < AllPlayerInfo.size(); i++){
+					for (int j = 0; j < AllPlayerInfoTemp.size(); j++){
+						if (Integer.parseInt(AllPlayerInfoTemp.get(j).Score) > highestscore){
+							highestscore = Integer.parseInt(AllPlayerInfoTemp.get(j).Score);
+							position = j;
+						}
+					}
+					ScoreSort.add(AllPlayerInfoTemp.get(position));
+					AllPlayerInfoTemp.remove(position);
+					highestscore = -1;
+					position = 0;
+				}
 
-			int blue = 1;
-			bluescore = 0;
-			int red = 1;
-			redscore = 0;
-			//int loop = 0;
-			if (!ScoreSort.isEmpty()){
+				int blue = 1;
+				bluescore = 0;
+				int red = 1;
+				redscore = 0;
+				//int loop = 0;
+
 				for (int loop = 0; loop <4;loop++){
 					if (ScoreSort.get(loop).Team.contains("Blue")){
 						if (blue == 1){
@@ -607,8 +642,8 @@ public class GameActivity extends Activity {
 				}
 
 				//update scores here
-				ScoreBlue.setText(bluescore+"");
-				ScoreRed.setText(redscore+"");
+				ScoreBlue.setText("Blue: "+bluescore);
+				ScoreRed.setText("Red: "+redscore);
 			}
 
 		}

@@ -15,7 +15,7 @@ public class Player implements Serializable {
 	int hit;
 	String BluetoothMac;
 	String team;
-	int[] teamMembers;
+	int[] teamMembers=new int[4];
 	String Ready;
 	Hashtable<Integer, Integer> playerHit;
 	Hashtable<Integer, Integer> hitByPlayer;
@@ -41,9 +41,7 @@ public class Player implements Serializable {
 		shotsFired++;
 	}
 	public void setTeamMembers(int[] ids){
-		for(int i = 0; i<=ids.length; i++){
-			teamMembers[i]=ids[i];
-		}
+			this.teamMembers = ids;
 	}
 	public boolean gotHit(int playerID){
 		boolean teamMate = false;
@@ -93,6 +91,9 @@ public class Player implements Serializable {
 	}
 	public String getName(){
 		return playerName;
+	}
+	public int[] getTeamMembers(){
+		return teamMembers;
 	}
 	
 	public void earseAll() {

@@ -351,7 +351,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 					}
 					if (time != 0){
 						timer.cancel();
-						
+
 						/*
 						int countdown = (int) (time - System.currentTimeMillis());
 						countdown = countdown - 3000;
@@ -361,7 +361,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
-						*/
+						 */
 						Intent in = new Intent(JoinActivity.this,
 								GameActivity.class);
 						in.putExtra("player", player );
@@ -464,7 +464,9 @@ public class JoinActivity extends Activity implements OnClickListener {
 				}
 			}
 			if (GameMode.charAt(0) == 'T'){
-				setDisplay();
+				if (!AllPlayers.isEmpty()&&!AllColors.isEmpty()&&!AllReady.isEmpty()){
+					setDisplay();
+				}
 			}
 			// dismiss the dialog after getting all products
 			//pDialog.dismiss();
@@ -488,26 +490,28 @@ public class JoinActivity extends Activity implements OnClickListener {
 				}
 			}
 			//SET TEAM MEMBERS
-			if (player.getTeam() == "Blue"){
+			if (player.getTeam().contains("Blue")){
 				int[] members = new int[4];	
 				members[0] = 0; members[1] = 0; members[2] = 0; members[3] = 0;
 				for (int count = 0; count < 4; count ++){
 					if  (blue[count] != 9){
 						members[count] = blue[count]+1;
 					}
-					
+
 				}
+				Log.d("Recieved", "team members are: "+members);
 				player.setTeamMembers(members);
 			}
-			else if (player.getTeam() == "Red"){
+			else if (player.getTeam().contains("Red")){
 				int[] members = new int[4];	
 				members[0] = 0; members[1] = 0; members[2] = 0; members[3] = 0;
 				for (int count = 0; count < 4; count ++){
 					if  (red[count] != 9){
 						members[count] = red[count]+1;
 					}
-					
+
 				}
+				Log.d("Recieved", "team members are: "+members);
 				player.setTeamMembers(members);
 			}
 			//SET BLUE TEAM DISPLAY
@@ -952,29 +956,29 @@ public class JoinActivity extends Activity implements OnClickListener {
 		// Check your log cat for JSON reponse
 		Log.d("All Products: ", json.toString());
 
-			// Checking for SUCCESS TAG
-			int success = json.getInt(TAG_SUCCESS);
+		// Checking for SUCCESS TAG
+		int success = json.getInt(TAG_SUCCESS);
 
-			if (success == 1) {
-				// products found
-				// Getting Array of Products
-				products = json.getJSONArray(TAG_GAME_INFO);
+		if (success == 1) {
+			// products found
+			// Getting Array of Products
+			products = json.getJSONArray(TAG_GAME_INFO);
 
 
-				// looping through All Products
+			// looping through All Products
 
-				JSONObject c = products.getJSONObject(0);
-				AllReady.clear();
-				
-				AllReady.add(c.getString("player1Ready"));
-				AllReady.add(c.getString("player2Ready"));
-				AllReady.add(c.getString("player3Ready"));
-				AllReady.add(c.getString("player4Ready"));
-				AllReady.add(c.getString("player5Ready"));
-				AllReady.add(c.getString("player6Ready"));
-				AllReady.add(c.getString("player7Ready"));
-				AllReady.add(c.getString("player8Ready"));
-			}
+			JSONObject c = products.getJSONObject(0);
+			AllReady.clear();
+
+			AllReady.add(c.getString("player1Ready"));
+			AllReady.add(c.getString("player2Ready"));
+			AllReady.add(c.getString("player3Ready"));
+			AllReady.add(c.getString("player4Ready"));
+			AllReady.add(c.getString("player5Ready"));
+			AllReady.add(c.getString("player6Ready"));
+			AllReady.add(c.getString("player7Ready"));
+			AllReady.add(c.getString("player8Ready"));
+		}
 
 	}
 	//NEED TO CHANGE!

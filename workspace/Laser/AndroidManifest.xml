@@ -55,6 +55,7 @@
         <activity
             android:name="com.example.laser.GameActivity"
             android:label="@string/title_activity_game"
+            android:screenOrientation="landscape"
             android:parentActivityName="com.example.laser.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
