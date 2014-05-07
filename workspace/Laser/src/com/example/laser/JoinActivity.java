@@ -119,6 +119,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 	Resources res;
 
 	long time;
+	int succ;
 
 
 	@SuppressWarnings("deprecation")
@@ -302,9 +303,9 @@ public class JoinActivity extends Activity implements OnClickListener {
 
 			try {
 				// Checking for SUCCESS TAG
-				int success = json.getInt(TAG_SUCCESS);
+				succ = json.getInt(TAG_SUCCESS);
 
-				if (success == 1) {
+				if (succ == 1) {
 					// products found
 					// Getting Array of Products
 					products = json.getJSONArray(TAG_GAME_INFO);
@@ -464,7 +465,7 @@ public class JoinActivity extends Activity implements OnClickListener {
 				}
 			}
 			if (GameMode.charAt(0) == 'T'){
-				if (!AllPlayers.isEmpty()&&!AllColors.isEmpty()&&!AllReady.isEmpty()){
+				if (!AllPlayers.isEmpty()&&!AllColors.isEmpty()&&!AllReady.isEmpty() && succ ==1){
 					setDisplay();
 				}
 			}

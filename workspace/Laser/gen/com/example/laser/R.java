@@ -30,8 +30,9 @@ public final class R {
         public static final int joinggamebackground=0x7f020006;
         public static final int logo=0x7f020007;
         public static final int red_back=0x7f020008;
-        public static final int redteam=0x7f020009;
-        public static final int world=0x7f02000a;
+        public static final int redblue=0x7f020009;
+        public static final int redteam=0x7f02000a;
+        public static final int world=0x7f02000b;
     }
     public static final class id {
         public static final int Blue1=0x7f080008;
@@ -54,18 +55,24 @@ public final class R {
         public static final int TextView006=0x7f08002a;
         public static final int TextView007=0x7f08002b;
         public static final int TextView008=0x7f08002c;
-        public static final int action_settings=0x7f08003e;
+        public static final int action_settings=0x7f08004a;
         public static final int btnOff=0x7f080015;
         public static final int btnOn=0x7f080014;
         public static final int buttonhost=0x7f080021;
         public static final int count1=0x7f080022;
         public static final int counter2=0x7f080013;
-        public static final int current_players=0x7f08003d;
+        public static final int current_players=0x7f080049;
         public static final int find=0x7f080039;
         public static final int findtitle=0x7f080002;
-        public static final int gameinfo=0x7f08003c;
+        public static final int gameinfo=0x7f080048;
         public static final int help=0x7f08003a;
+        public static final int home=0x7f08003b;
         public static final int host=0x7f080038;
+        public static final int info0=0x7f080042;
+        public static final int info1=0x7f080043;
+        public static final int info2=0x7f080044;
+        public static final int info3=0x7f080045;
+        public static final int info4=0x7f080046;
         public static final int joinLayout=0x7f080024;
         public static final int linearLayout1=0x7f08000d;
         public static final int linearLayout2=0x7f080007;
@@ -75,7 +82,12 @@ public final class R {
         public static final int name1=0x7f080018;
         public static final int password1=0x7f08001c;
         public static final int passwordname=0x7f080019;
-        public static final int pid=0x7f08003b;
+        public static final int pid=0x7f080047;
+        public static final int place0=0x7f08003c;
+        public static final int place1=0x7f08003d;
+        public static final int place2=0x7f08003e;
+        public static final int place3=0x7f08003f;
+        public static final int place4=0x7f080040;
         public static final int playerName=0x7f080004;
         public static final int player_name=0x7f080001;
         public static final int players=0x7f08001b;
@@ -83,6 +95,7 @@ public final class R {
         public static final int radio0=0x7f08001f;
         public static final int radio1=0x7f080020;
         public static final int radioGroup1=0x7f08001e;
+        public static final int scores=0x7f080041;
         public static final int scrollView1=0x7f080037;
         public static final int servername=0x7f080017;
         public static final int startButton=0x7f080036;
@@ -110,8 +123,9 @@ public final class R {
         public static final int activity_host_server=0x7f030008;
         public static final int activity_join=0x7f030009;
         public static final int activity_main=0x7f03000a;
-        public static final int find_game=0x7f03000b;
-        public static final int list_item=0x7f03000c;
+        public static final int activity_result=0x7f03000b;
+        public static final int find_game=0x7f03000c;
+        public static final int list_item=0x7f03000d;
     }
     public static final class menu {
         public static final int bluetooth=0x7f070000;
@@ -122,6 +136,7 @@ public final class R {
         public static final int host_server=0x7f070005;
         public static final int join=0x7f070006;
         public static final int main=0x7f070007;
+        public static final int result=0x7f070008;
     }
     public static final class string {
         public static final int action_settings=0x7f050001;
@@ -134,6 +149,7 @@ public final class R {
         public static final int title_activity_host=0x7f050003;
         public static final int title_activity_host_server=0x7f050006;
         public static final int title_activity_join=0x7f050007;
+        public static final int title_activity_result=0x7f05000a;
     }
     public static final class style {
         /** 

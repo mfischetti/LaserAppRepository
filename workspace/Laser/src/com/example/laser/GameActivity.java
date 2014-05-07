@@ -22,6 +22,7 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
@@ -30,6 +31,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -71,8 +73,9 @@ public class GameActivity extends Activity {
 	private BluetoothAdapter btAdapter = null;
 	private BluetoothSocket btSocket = null;
 	private StringBuilder sb = new StringBuilder();
-	int gameTime = 600;
+	int gameTime = 15;//THIS CONTROLS HOW LONG THE GAME IS
 	private ConnectedThread mConnectedThread;
+	int success = 0;
 
 	// SPP UUID service
 	private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -86,6 +89,7 @@ public class GameActivity extends Activity {
 	Drawable back;
 	Resources res;
 	int bluescore, redscore;
+	Vibrator v;
 
 	/** Called when the activity is first created. */
 	@SuppressWarnings("deprecation")
@@ -109,7 +113,7 @@ public class GameActivity extends Activity {
 		}
 		RelativeLayout rellayout = (RelativeLayout) findViewById(R.id.GameLayout);
 		rellayout.setBackgroundDrawable(back);
-
+		v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		//	btnOn = (Button) findViewById(R.id.btnOn);                  // button LED ON
 		//btnOff = (Button) findViewById(R.id.btnOff);                // button LED OFF
 		game_time = (TextView) findViewById(R.id.txtArduino);      // for display the received data from the Arduino
@@ -145,6 +149,8 @@ public class GameActivity extends Activity {
 						}
 					}
 					if (hit){
+						// Vibrate for 400 milliseconds
+						v.vibrate(1000);
 						UpdateShooter(strIncom);
 					}
 					Log.d(TAG, "Shot by:"+ strIncom);
@@ -191,9 +197,9 @@ public class GameActivity extends Activity {
 
 		try {
 			// Checking for SUCCESS TAG
-			int success = json.getInt(TAG_SUCCESS);
+			int success1 = json.getInt(TAG_SUCCESS);
 
-			if (success == 1) {
+			if (success1 == 1) {
 				// products found
 				// Getting Array of Products
 				products = json.getJSONArray("games"+player.getGameID());
@@ -431,7 +437,7 @@ public class GameActivity extends Activity {
 
 			try {
 				// Checking for SUCCESS TAG
-				int success = json.getInt(TAG_SUCCESS);
+				success = json.getInt(TAG_SUCCESS);
 				//RedScore.setText(success+"");
 				if (success == 1) {
 					// products found
@@ -539,14 +545,33 @@ public class GameActivity extends Activity {
 			int mins = hold_time/60;
 			int secs = hold_time % 60;
 			if (secs >= 10){
-				game_time.setText(mins+":"+secs);
+				if (mins==0){
+					game_time.setText("0"+mins+":"+secs);
+				}
+				else{
+					game_time.setText(mins+":"+secs);
+				}
 			}
 			else{
-				game_time.setText(mins+":0"+secs);
+				if(mins==0){
+					game_time.setText("0"+mins+":0"+secs);
+				}
+				else{
+					game_time.setText(mins+":0"+secs);
+				}
 			}
 			if (gameTime == 0){
-				//CHANGE ACTIVITYS
 				timer.cancel();
+				try {
+					btSocket.close();
+				} catch (IOException e) {
+					errorExit("Fatal Error", "In changing activities, failed to close socket" + e.getMessage() + ".");	
+				}
+				Intent in = new Intent(getApplicationContext(),
+						ResultActivity.class);
+				in.putExtra("player", player);
+				startActivity(in);	
+
 			}
 			else{
 				gameTime = gameTime - 1;
@@ -554,7 +579,7 @@ public class GameActivity extends Activity {
 			///////////////////////////////////////////////////////
 			///////////////Score Display///////////////////////////
 			///////////////////////////////////////////////////////
-			if (!AllPlayerInfo.isEmpty()){
+			if (!AllPlayerInfo.isEmpty() && success == 1){
 				ArrayList<GamePlayer> AllPlayerInfoTemp = new ArrayList<GamePlayer>();
 				AllPlayerInfoTemp.addAll(AllPlayerInfo);
 				ArrayList<GamePlayer> ScoreSort = new ArrayList<GamePlayer>();
@@ -579,10 +604,10 @@ public class GameActivity extends Activity {
 				redscore = 0;
 				//int loop = 0;
 
-				for (int loop = 0; loop <4;loop++){
+				for (int loop = 0; loop <ScoreSort.size();loop++){
 					if (ScoreSort.get(loop).Team.contains("Blue")){
 						if (blue == 1){
-							Blue1.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
+							Blue1.setText(ScoreSort.get(loop).NameID+ "\t\t"+ ScoreSort.get(loop).Score);
 							Blue2.setText("");
 							Blue3.setText("");
 							Blue4.setText("");
@@ -590,7 +615,7 @@ public class GameActivity extends Activity {
 							bluescore = bluescore + Integer.parseInt(ScoreSort.get(loop).Score);
 						}
 						else if (blue == 2){
-							Blue2.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
+							Blue2.setText(ScoreSort.get(loop).NameID+ "\t\t"+ ScoreSort.get(loop).Score);
 							Blue3.setText("");
 							Blue4.setText("");
 							blue++;
@@ -598,14 +623,14 @@ public class GameActivity extends Activity {
 
 						}
 						else if (blue == 3){
-							Blue3.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
+							Blue3.setText(ScoreSort.get(loop).NameID+ "\t\t"+ ScoreSort.get(loop).Score);
 							Blue4.setText("");
 							blue++;
 							bluescore = bluescore + Integer.parseInt(ScoreSort.get(loop).Score);
 
 						}
 						else if (blue == 4){
-							Blue4.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
+							Blue4.setText(ScoreSort.get(loop).NameID+ "\t\t"+ ScoreSort.get(loop).Score);
 							blue= 1;
 							bluescore = bluescore + Integer.parseInt(ScoreSort.get(loop).Score);
 						}
@@ -613,7 +638,7 @@ public class GameActivity extends Activity {
 
 					else if (ScoreSort.get(loop).Team.contains("Red")){
 						if (red == 1){
-							Red1.setText(ScoreSort.get(loop).NameID+ "\t"+ ScoreSort.get(loop).Score);
+							Red1.setText(ScoreSort.get(loop).NameID+ "\t\t"+ ScoreSort.get(loop).Score);
 							Red2.setText("");
 							Red3.setText("");
 							Red4.setText("");
