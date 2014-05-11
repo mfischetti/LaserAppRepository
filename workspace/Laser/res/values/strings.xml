@@ -12,5 +12,7 @@
     <string name="title_activity_game">GameActivity</string>
     <string name="title_activity_bluetooth">BluetoothActivity</string>
     <string name="title_activity_result">ResultActivity</string>
+        <!-- Latitude, longitude format -->
+    <string name="latitude_longitude">%1$.8f, %2$.8f</string>
 
 </resources>

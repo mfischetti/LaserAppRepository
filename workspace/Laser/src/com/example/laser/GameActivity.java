@@ -18,15 +18,30 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+
+
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,12 +58,59 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class GameActivity extends Activity {
+public class GameActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks,
+GooglePlayServicesClient.OnConnectionFailedListener,
+LocationListener, OnClickListener, SensorEventListener  {
 	private static final String TAG = "bluetooth";
 
 	private static String url_update_shooter = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/update_shooter.php";
 	private static String url_get_gamedata = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/get_ingame_info.php";
+	private static String url_create_product = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/testCords.php";
+	private static String url_get_cords = "http://lasertagapp.no-ip.biz/laserDatabase/android_connect/get_cords.php";
+	String playerLat="0";
+	String playerLon="0";
+	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+	private MyImageView myImageView;
 
+	
+	double enemy1x=0;
+	double enemy1y=0;
+	double enemy2x=0;
+	double enemy2y=0;
+	
+	double teamx=0;
+	double teamy=0;
+	
+	JSONArray playerCords = null;
+	float x, y;
+	float [] loc;
+	float radius = 50;
+	double myLat=0, myLon=0;
+	Button randomCords;
+	// record the compass picture angle turned
+	private float currentDegree = 0f;
+
+	// device sensor manager
+	private SensorManager mSensorManager;
+
+	public Timer timer2;
+	// A request to connect to Location Services
+	private LocationRequest mLocationRequest;
+	// Stores the current instantiation of the location client in this object
+	private LocationClient mLocationClient;
+	TextView cords;
+	TextView degrees;
+	private Location currentLocation;
+
+	boolean mUpdatesRequested;
+
+	// Handle to SharedPreferences for this app
+	SharedPreferences mPrefs;
+
+	// Handle to a SharedPreferences editor
+	SharedPreferences.Editor mEditor;
+	// Global variable to hold the current location
+	//Location mCurrentLocation;
 	JSONParser jParser = new JSONParser();
 	JSONParser jsonParser = new JSONParser();
 	ArrayList<HashMap<String, String>> productsList;
@@ -73,7 +135,7 @@ public class GameActivity extends Activity {
 	private BluetoothAdapter btAdapter = null;
 	private BluetoothSocket btSocket = null;
 	private StringBuilder sb = new StringBuilder();
-	int gameTime = 15;//THIS CONTROLS HOW LONG THE GAME IS
+	int gameTime = 10;//THIS CONTROLS HOW LONG THE GAME IS
 	private ConnectedThread mConnectedThread;
 	int success = 0;
 
@@ -130,6 +192,36 @@ public class GameActivity extends Activity {
 		ScoreBlue = (TextView) findViewById(R.id.BlueScore);
 		ScoreRed = (TextView) findViewById(R.id.RedScore);
 		player_name.setText(player.getName());
+	//	degrees = (TextView)findViewById(R.id.degree);
+	//	cords = (TextView)findViewById(R.id.cords);
+		myImageView = (MyImageView) findViewById(R.id.radar);
+		myImageView.setImageResource(R.drawable.radar);
+	//	randomCords = (Button)findViewById(R.id.randomLoc);
+	//	randomCords.setOnClickListener(this);
+		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+		/// Open the shared preferences
+		mPrefs = getSharedPreferences(LocationUtils.SHARED_PREFERENCES,
+				Context.MODE_PRIVATE);
+		// Get a SharedPreferences editor
+		mEditor = mPrefs.edit();
+		JSONParser jParser = new JSONParser();
+		/*
+		 * Create a new location client, using the enclosing class to
+		 * handle callbacks.
+		 */
+		mLocationClient = new LocationClient(this, this, this);
+		// Start with updates turned off
+		mUpdatesRequested = false;
+
+		// Create the LocationRequest object
+		mLocationRequest = LocationRequest.create();
+		// Use high accuracy
+		mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+		// Set the update interval to 5 seconds
+		mLocationRequest.setInterval(LocationUtils.UPDATE_INTERVAL_MSECS);
+		// Set the fastest update interval to 1 second
+		mLocationRequest.setFastestInterval(LocationUtils.FAST_INTERVAL_CEILING_MSECS);
+
 		callAsynchronousTask();
 		h = new Handler() {
 			public void handleMessage(android.os.Message msg) {
@@ -280,6 +372,23 @@ public class GameActivity extends Activity {
 		mConnectedThread = new ConnectedThread(btSocket);
 		mConnectedThread.start();
 		mConnectedThread.write(""+player.getPlayerSpot());
+
+		// for the system's orientation sensor registered listeners
+		mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+				SensorManager.SENSOR_DELAY_GAME);
+
+		/*
+		 * Get any previous setting for location updates
+		 * Gets "false" if an error occurs
+		 */
+		if (mPrefs.contains(LocationUtils.KEY_UPDATES_REQUESTED)) {
+			mUpdatesRequested = mPrefs.getBoolean(LocationUtils.KEY_UPDATES_REQUESTED, false);
+
+			// Otherwise, turn off location updates
+		} else {
+			mEditor.putBoolean(LocationUtils.KEY_UPDATES_REQUESTED, false);
+			mEditor.commit();
+		}
 	}
 
 	@Override
@@ -293,6 +402,11 @@ public class GameActivity extends Activity {
 		} catch (IOException e2) {
 			errorExit("Fatal Error", "In onPause() and failed to close socket." + e2.getMessage() + ".");
 		}
+		mSensorManager.unregisterListener(this);
+
+		// Save the current setting for updates
+		mEditor.putBoolean(LocationUtils.KEY_UPDATES_REQUESTED, mUpdatesRequested);
+		mEditor.commit();
 	}
 
 	private void checkBTState() {
@@ -479,6 +593,147 @@ public class GameActivity extends Activity {
 							c3.getString("Player8"),c3.getString("Team"),c3.getString("xLoc"),
 							c3.getString("yLoc"),c3.getString("Score"),getName(c3.getString("NameID")));
 					AllPlayerInfo.add(temp3);
+					if(player.getName().contains(temp.NameID)){
+						teamx =Double.parseDouble(temp2.xLoc);
+						teamy =Double.parseDouble(temp2.yLoc);
+						enemy1x =Double.parseDouble(temp1.xLoc);
+						enemy1y =Double.parseDouble(temp1.yLoc);
+						enemy2x =Double.parseDouble(temp3.xLoc);
+						enemy2y =Double.parseDouble(temp3.yLoc);
+						/*
+						if(temp1.Team.contains(player.getTeam())){
+							teamx =Double.parseDouble(temp1.xLoc);
+							teamy =Double.parseDouble(temp1.yLoc);
+							enemy1x =Double.parseDouble(temp2.xLoc);
+							enemy1y =Double.parseDouble(temp2.yLoc);
+							enemy2x =Double.parseDouble(temp3.xLoc);
+							enemy2y =Double.parseDouble(temp3.yLoc);
+						}
+						else if(temp2.Team.contains(player.getTeam())){
+							teamx =Double.parseDouble(temp2.xLoc);
+							teamy =Double.parseDouble(temp2.yLoc);
+							enemy1x =Double.parseDouble(temp1.xLoc);
+							enemy1y =Double.parseDouble(temp1.yLoc);
+							enemy2x =Double.parseDouble(temp3.xLoc);
+							enemy2y =Double.parseDouble(temp3.yLoc);
+						}
+						else{
+							teamx =Double.parseDouble(temp3.xLoc);
+							teamy =Double.parseDouble(temp3.yLoc);
+							enemy1x =Double.parseDouble(temp1.xLoc);
+							enemy1y =Double.parseDouble(temp1.yLoc);
+							enemy2x =Double.parseDouble(temp2.xLoc);
+							enemy2y =Double.parseDouble(temp2.yLoc);
+							
+						}
+						*/
+					}
+					if(player.getName().contains(temp1.NameID)){
+						teamx =Double.parseDouble(temp3.xLoc);
+						teamy =Double.parseDouble(temp3.yLoc);
+						enemy1x =Double.parseDouble(temp.xLoc);
+						enemy1y =Double.parseDouble(temp.yLoc);
+						enemy2x =Double.parseDouble(temp2.xLoc);
+						enemy2y =Double.parseDouble(temp2.yLoc);
+						/*
+						if(temp.Team.contains(player.getTeam())){
+							teamx =Double.parseDouble(temp.xLoc);
+							teamy =Double.parseDouble(temp.yLoc);
+							enemy1x =Double.parseDouble(temp2.xLoc);
+							enemy1y =Double.parseDouble(temp2.yLoc);
+							enemy2x =Double.parseDouble(temp3.xLoc);
+							enemy2y =Double.parseDouble(temp3.yLoc);
+						}
+						else if(temp2.Team.contains(player.getTeam())){
+							teamx =Double.parseDouble(temp2.xLoc);
+							teamy =Double.parseDouble(temp2.yLoc);
+							enemy1x =Double.parseDouble(temp.xLoc);
+							enemy1y =Double.parseDouble(temp.yLoc);
+							enemy2x =Double.parseDouble(temp3.xLoc);
+							enemy2y =Double.parseDouble(temp3.yLoc);
+						}
+						else{
+							teamx =Double.parseDouble(temp3.xLoc);
+							teamy =Double.parseDouble(temp3.yLoc);
+							enemy1x =Double.parseDouble(temp.xLoc);
+							enemy1y =Double.parseDouble(temp.yLoc);
+							enemy2x =Double.parseDouble(temp2.xLoc);
+							enemy2y =Double.parseDouble(temp2.yLoc);
+							
+						}
+						*/
+					}
+					if(player.getName().contains(temp2.NameID)){
+						/*
+						if(temp1.Team.contains(player.getTeam())){
+							teamx =Double.parseDouble(temp1.xLoc);
+							teamy =Double.parseDouble(temp1.yLoc);
+							enemy1x =Double.parseDouble(temp.xLoc);
+							enemy1y =Double.parseDouble(temp.yLoc);
+							enemy2x =Double.parseDouble(temp3.xLoc);
+							enemy2y =Double.parseDouble(temp3.yLoc);
+						}
+						else if(temp2.Team.contains(player.getTeam())){
+							teamx =Double.parseDouble(temp.xLoc);
+							teamy =Double.parseDouble(temp.yLoc);
+							enemy1x =Double.parseDouble(temp1.xLoc);
+							enemy1y =Double.parseDouble(temp1.yLoc);
+							enemy2x =Double.parseDouble(temp3.xLoc);
+							enemy2y =Double.parseDouble(temp3.yLoc);
+						}
+						else{
+							teamx =Double.parseDouble(temp3.xLoc);
+							teamy =Double.parseDouble(temp3.yLoc);
+							enemy1x =Double.parseDouble(temp1.xLoc);
+							enemy1y =Double.parseDouble(temp1.yLoc);
+							enemy2x =Double.parseDouble(temp.xLoc);
+							enemy2y =Double.parseDouble(temp.yLoc);
+							
+						}
+						*/
+						teamx =Double.parseDouble(temp.xLoc);
+						teamy =Double.parseDouble(temp.yLoc);
+						enemy1x =Double.parseDouble(temp1.xLoc);
+						enemy1y =Double.parseDouble(temp1.yLoc);
+						enemy2x =Double.parseDouble(temp3.xLoc);
+						enemy2y =Double.parseDouble(temp3.yLoc);
+					}
+					if(player.getName().contains(temp3.NameID)){
+						/*
+						if(temp1.Team.contains(player.getTeam())){
+							teamx =Double.parseDouble(temp1.xLoc);
+							teamy =Double.parseDouble(temp1.yLoc);
+							enemy1x =Double.parseDouble(temp2.xLoc);
+							enemy1y =Double.parseDouble(temp2.yLoc);
+							enemy2x =Double.parseDouble(temp.xLoc);
+							enemy2y =Double.parseDouble(temp.yLoc);
+						}
+						else if(temp2.Team.contains(player.getTeam())){
+							teamx =Double.parseDouble(temp2.xLoc);
+							teamy =Double.parseDouble(temp2.yLoc);
+							enemy1x =Double.parseDouble(temp1.xLoc);
+							enemy1y =Double.parseDouble(temp1.yLoc);
+							enemy2x =Double.parseDouble(temp.xLoc);
+							enemy2y =Double.parseDouble(temp.yLoc);
+						}
+						else{
+							teamx =Double.parseDouble(temp.xLoc);
+							teamy =Double.parseDouble(temp.yLoc);
+							enemy1x =Double.parseDouble(temp1.xLoc);
+							enemy1y =Double.parseDouble(temp1.yLoc);
+							enemy2x =Double.parseDouble(temp2.xLoc);
+							enemy2y =Double.parseDouble(temp2.yLoc);
+							
+						}
+						*/
+						teamx =Double.parseDouble(temp1.xLoc);
+						teamy =Double.parseDouble(temp1.yLoc);
+						enemy1x =Double.parseDouble(temp.xLoc);
+						enemy1y =Double.parseDouble(temp.yLoc);
+						enemy2x =Double.parseDouble(temp2.xLoc);
+						enemy2y =Double.parseDouble(temp2.yLoc);
+					}
+				
 
 					// Storing each json item in variable
 
@@ -538,7 +793,8 @@ public class GameActivity extends Activity {
 		 * After completing background task Dismiss the progress dialog
 		 * **/
 		protected void onPostExecute(String file_url) {
-			///////////////////////////////////////////////////////
+			////////////////////////////
+			///////////////////////////
 			//////////////////GAME TIME////////////////////////////
 			///////////////////////////////////////////////////////
 			int hold_time = gameTime;
@@ -673,4 +929,252 @@ public class GameActivity extends Activity {
 
 		}
 	}
+	@Override
+	protected void onStart() {
+		super.onStart();
+		// Connect the client.
+		mLocationClient.connect();
+	}
+
+	/*
+	 * Called when the Activity is no longer visible.
+	 * Stop updating location and disconnect
+	 */
+	@Override
+	protected void onStop() {
+		// If the client is connected
+		if (mLocationClient.isConnected()) {
+			/*
+			 * Remove location updates for a listener.
+			 * The current Activity is the listener, so
+			 * the argument is "this".
+			 */
+
+			// Unsure if this is correct
+			mLocationClient.removeLocationUpdates(this);
+		}
+		/*
+		 * After disconnect() is called, the client is
+		 * considered "dead".
+		 */
+
+		// Disconnecting the client invalidates it.
+		mLocationClient.disconnect();
+		super.onStop();
+	}
+	/*
+	 * Handle results returned to the FragmentActivity
+	 * by Google Play services
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// Decide what to do based on the original request code
+		switch (requestCode) {
+		case CONNECTION_FAILURE_RESOLUTION_REQUEST :
+			/*
+			 * If the result code is Activity.RESULT_OK, try
+			 * to connect again
+			 */
+			switch (resultCode) {
+			case Activity.RESULT_OK :
+				/*
+				 * Try the request again
+				 */
+
+				//maybe???
+				//servicesConnected();
+				break;
+			}
+		}
+	}
+	private boolean servicesConnected() {
+		// Check that Google Play services is available
+		int resultCode =
+				GooglePlayServicesUtil.
+				isGooglePlayServicesAvailable(this);
+		// If Google Play services is available
+		if (ConnectionResult.SUCCESS == resultCode) {
+			// In debug mode, log the status
+			Log.d("Location Updates",
+					"Google Play services is available.");
+			// Continue
+			return true;
+			// Google Play services was not available for some reason
+		} else {
+			// Get the error code
+			//int errorCode = connectionResult.getErrorCode();
+			// Get the error dialog from Google Play services
+
+			//	Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
+			//		resultCode,
+			//	this,
+			//CONNECTION_FAILURE_RESOLUTION_REQUEST);
+
+
+
+		}
+		return false;
+		//	}
+	}
+	/*
+	 * Called by Location Services when the request to connect the
+	 * client finishes successfully. At this point, you can
+	 * request the current location or start periodic updates
+	 */
+	@Override
+	public void onConnected(Bundle dataBundle) {
+		// Display the connection status
+		Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
+		mUpdatesRequested = true;
+		//Toast.makeText(this, LocationUtils.getLatLng(this, currentLocation), Toast.LENGTH_SHORT).show();
+
+		//if already requested, start periodic updates
+		if (mUpdatesRequested) {
+			mLocationClient.requestLocationUpdates(mLocationRequest, this);
+			Log.v("Location: onConnected()", LocationUtils.getLatLng(this, currentLocation));
+
+		}
+
+
+		// If Google Play Services is available
+		if (servicesConnected()) {
+
+			// Get the current location
+			currentLocation = mLocationClient.getLastLocation();
+
+			// Display the current location in the Log
+			Log.v("Location: servicesConnected()", LocationUtils.getLatLng(this, currentLocation));
+
+			if (currentLocation != null) {
+				Log.v("Initial Location", "Entered If Statement");
+				//	mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(),
+				//		currentLocation.getLongitude()),14));
+				Log.v("Initial Location", "Should Be On Current Location");
+			}
+		}
+	}
+	// ...
+	/*
+	 * Called by Location Services if the connection to the
+	 * location client drops because of an error.
+	 */
+	@Override
+	public void onDisconnected() {
+		// Display the connection status
+		Toast.makeText(this, "Disconnected. Please re-connect.",
+				Toast.LENGTH_SHORT).show();
+	}
+	// ...
+	/*
+	 * Called by Location Services if the attempt to
+	 * Location Services fails.
+	 */
+	@Override
+	public void onConnectionFailed(ConnectionResult connectionResult) {
+		/*
+		 * Google Play services can resolve some errors it detects.
+		 * If the error has a resolution, try sending an Intent to
+		 * start a Google Play services activity that can resolve
+		 * error.
+		 */
+		if (connectionResult.hasResolution()) {
+			try {
+				// Start an Activity that tries to resolve the error
+				connectionResult.startResolutionForResult(
+						this,
+						CONNECTION_FAILURE_RESOLUTION_REQUEST);
+				/*
+				 * Thrown if Google Play services canceled the original
+				 * PendingIntent
+				 */
+			} catch (IntentSender.SendIntentException e) {
+				// Log the error
+				e.printStackTrace();
+			}
+		} else {
+			/*
+			 * If no resolution is available, display a dialog to the
+			 * user with the error.
+			 */
+			//	showErrorDialog(connectionResult.getErrorCode());
+		}
+	}
+
+	
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		// TODO Auto-generated method stub
+		float degree = Math.round(event.values[0]);
+		currentDegree = -degree;
+		myImageView.setMyCords(myLat, myLon,teamx,teamy,enemy1x,enemy1y,enemy2x,enemy2y, currentDegree);
+
+	//	myImageView.setMyCords(myLat, myLon, currentDegree);
+
+	//	degrees.setText(""+currentDegree);
+
+
+		
+	}
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onLocationChanged(Location location) {
+		// TODO Auto-generated method stub
+		String msg = "Updated Location: " +
+				Double.toString(location.getLatitude()) + "," +
+				Double.toString(location.getLongitude());
+		//Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+		myLat = location.getLatitude();
+		myLon = location.getLongitude();
+		Log.v("Location: onLocationChanged()", msg);
+		String lat = Double.toString(location.getLatitude());
+		String lon = Double.toString(location.getLongitude());
+	//	myImageView.setMyCords(myLat, myLon, currentDegree);
+		Log.d("call updateCords","Mylat: "+myLat+" myLon: "+myLon);
+		updateCords();
+		//cords.setText(lat+"/"+lon);
+		
+	}
+	public void updateCords(){
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		//	params.add(new BasicNameValuePair("pid","1"));
+		//params.add(new BasicNameValuePair("player", "1"));
+		params.add(new BasicNameValuePair("game_id", "game"+player.getGameID()));
+
+		params.add(new BasicNameValuePair("player", ""+player.getPlayerSpot()));
+		params.add(new BasicNameValuePair("myLat", ""+myLat));
+		params.add(new BasicNameValuePair("myLon", ""+myLon));
+		JSONObject json = jsonParser.makeHttpRequest(url_create_product,
+				"POST", params);
+
+		
+
+		// check log cat fro response
+		Log.d("Create Response", json.toString());
+
+		// check for success tag
+		try {
+			int success = json.getInt(TAG_SUCCESS);
+
+			if (success == 1) {
+
+
+				// closing this screen
+			} else {
+				// failed to create product
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+
 }

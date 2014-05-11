@@ -122,6 +122,6 @@
         android:layout_alignRight="@+id/players"
         android:layout_alignTop="@+id/radioGroup1"
         android:layout_marginRight="30dp"
-        android:text="Button" />
+        android:text="START" />
 
 </RelativeLayout>
